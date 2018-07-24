@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app12">
+        {{message}}
+        {{error.a}}
+    </div>
+    <script>
+        /* 3.我们的数据对象 */
+        const dataTwo = {
+            message: '我就是打酱油的App12',
+            error: {
+                a : '能显示嘛？'
+            }
+        }
+
+        /* 7.我是负责来测试的，可以删掉 */
+//        Object.freeze(dataTwo.error)
+
+        /* 4.创建一个实例，绑定Vue坑 */
+        const vm = new Vue({
+            /* 选项 */
+            el: '#app12',
+            /* 该对象加入了一个Vue实例中 */
+            data: dataTwo
+        })
+
+        /* 获得这个实例上的属性，与返回源对象中的对应字段 */
+        console.log(dataTwo.message === vm.message, 1) // true
+
+        /* 设置该属性也能影响源对象上的字段 */
+        setTimeout(function () {
+            vm.message = '我是通过Vue实例中的属性进行修改的内容'
+            console.log(dataTwo.message, 2)
+        },2000)
+
+        /* 反之一样 */
+        setTimeout(function () {
+            dataTwo.message = 'dataTwo中的原始数据'
+            console.log(vm.message, 3)
+        },4000)
+
+        /*
+        * 5.当这些数据改变时，试图会进行重新渲染。值得注意的是，只有实例被创建时dataTwo中存在的属性才是响应式的，比如后期添加一个新属性就不会渲染
+        * */
+        dataTwo.newData = '我是才加进去的属性'
+        console.log(vm.newData, 4) // undefined
+
+        /*
+        * 6.如果想要让他能改动时出发数据更新，那么就需要一开始就进行定义或者赋值，比如见dataTwo.error
+        * */
+        console.log(dataTwo.error.a, 5)
+        vm.error.a = 'vmNull'
+        console.log(dataTwo.error.a, 6)
+
+        /*
+         * 7.特殊情况，唯一例外的：使用Object.freeze()。他会阻止修改现有的属性，意味响应系统无法进行追踪变化。见 25行，实例创建之前
+         * 8.但是这个必须在Vue实例创建前建立才有效果，当实例已经创建的话就没有效果
+         * 9.Object.freeze()的参数不能是字符串.暂时可以确定对对象有效果
+         * */
+//        Object.freeze(dataTwo)
+        setTimeout(function () {
+            dataTwo.error.a = '6秒后是否改变error值'
+        },6000)
+
+
+        /*
+        * 10.实例暴露出来的属性和方法，他们都有前缀 $ ，以便于与用户定义的属性和方法区分开来
+        * */
+        setTimeout(function () {
+            console.log(vm, 7)
+            console.log(vm.$el === document.getElementById('app12'), 8)
+            console.log(vm.$data === dataTwo, 9)
+
+        },8000)
+        vm.$watch('message', function (newValue, oldValue) {
+            // 这个回调将在 `vm.a` 改变后调用
+            console.log(newValue + '---我是刚改变的值', 10)
+            console.log(oldValue + '---我是改变前的值', 11)
+        })
+
+        /*
+        * 总结：
+        *   1.Object.freeze(xxx), xxx必须是对象，必须在实例创建前使用才有效
+        *   2.vm.$watch('message', function(newValue, oldValue){
+        *       // 逻辑语
+        *       // message： 必须是vm实例里面的对象数据
+        *       // newValue： 改变后的值
+        *       // oldValue： 改变前的值
+        *   })
+        *   vm：实例话对象中有暴露出来的 属性和方法(实例化后自带的)，他们有前缀$，为了区分用户定义的属性和方法
+        * */
+    </script>
+</body>
+</html>

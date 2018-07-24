@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app29">
+        <!-- 4.1.渲染全局的组件，并绑定v-for循环。 -->
+        <tode_item v-for="(item, index) in myArr" v-bind:key="index" v-bind:item="item" v-bind:id="index"></tode_item>
+
+        <!-- 5.以下是完整的todo_list的栗子 -->
+        <p>====以下是完整的简单的todo_list的栗子====</p>
+        <div id="todo-list-example">
+            <form v-on:submit.prevent="addNewTodo">
+                <!-- 5.4.点击label标签时可以自动对焦到input输入框中，标签为 input 元素定义标注（标记）。 -->
+                <label for="new-todo">Add a todo</label>
+                <!-- 5.5.label中的for和input中的id是配合使用的，for为label的属性，当for与id相同时，点击标签就会进入到对应的id的input中 -->
+                <input type="text" v-model="newTodoText" id="new-todo" placeholder="E.g.Feed the cat">
+                <button>添加按钮</button>
+            </form>
+            <ul>
+                <!-- 5.3.is属性：把标签转化为组件，为了避免某些特殊标签下不能放其他标签的情况，绑定组件的名称。这里是绑定了todo-list组件 -->
+                <li
+
+                        is="todo-list"
+                        v-for="(todo, index) in todos"
+                        v-bind:title="todo.title"
+                        v-bind:key="index"
+                        v-on:remove="todos.splice(index, 1)"
+                ></li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        /* 4.创建一个全局组件 */
+        Vue.component('tode_item', {
+            template: `<ul><li>组件都已经记不清怎么写的了，{{item}}，绑定过来的index，第 {{id}} 位 {{key}}</li></ul>`,
+            /* 5.接收父级传递过来的数据，绑定到组件中的里面 */
+            props: ['item', 'id', 'key']
+        })
+        /* 5.2.通过is属性绑定组件 */
+        Vue.component('todo-list', {
+            /* 5.2.1.$emit()：子组件触发父级的自定义事件，这里是触发remove事件 */
+            template: `<p>{{title}} <button v-on:click="$emit(\'remove\')">移出按钮</button></p>`,
+            props: ['title']
+        })
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+
+            el: '#app29',
+            data: {
+                myArr: ['这是第一步', '这是第三部', '这是第五布'],
+                /* 5.1.以下是完整的todo_list的栗子数据 */
+                /* 5.1.1.用于初始值且记录输入的数据 */
+                newTodoText: '',
+                todos: [{
+                    id: 1,
+                    title: 'J今天天气不错'
+                },{
+                    id: 2,
+                    title: 'M明天又要上班噶'
+                },{
+                    id: 3,
+                    title: 'H后来我们又相减相除'
+                },{
+                    id: 4,
+                    title: 'F反正你是一个大傻逼'
+                }],
+                nextTodoId: 5
+            },
+            methods: {
+                addNewTodo: function () {
+                    this.todos.push({
+                        id: this.nextTodoId++,
+                        title: this.newTodoText
+                    })
+                    this.newTodoText = ''
+                }
+            }
+        })
+
+        /*
+        * 总结：一个组件的 v-for
+        *   在组件上用v-for时，会对组件进行循环渲染，且需要绑定key进行确保组件的唯一性。
+        *   数据不会自动的被渲染到组件里面，需要用props来接收才行，这也说明了组件具有独立的作用域。见 4
+        *
+        *   父级传递 v-bind:xx='item' v-bind:id='index'，组件接收 props: ['xx','id']，但是不能接收命名为key的绑定属性名（报错）。见 5
+        *   不自动见item注入到组件里的原因是，这会是的组件与v-for的运作紧密耦合。明确组件数据的来源能够使组件在其他场合重复使用。
+        *
+        *   一些特殊的记忆：
+        *       - label中的for与input中的id需要对应才能点击label文字进行聚焦input：见 5.4
+        *       - $emit() 为触发父级（父组件）绑定的事件，逆向触发事件：见5.2.1
+        *       - is 属性，把标签绑定组件，用于特殊情况下不能使用自定义组件时使用：见5.2
+        * */
+    </script>
+</body>
+</html>

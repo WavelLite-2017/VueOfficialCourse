@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+    <style>
+        /* 通过v-bind来绑定类名 */
+        .active {
+            color: red;
+            font-size: 20px;
+        }
+        .arrName {
+            border: 1px solid #000;
+            padding: 5px;
+        }
+        .bacName {
+            background: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app20">
+        <!-- 4.通过v-bind: 绑定class类名，以对象形式来判断是否显示 ' {A: B} ' A为类名，B为布尔值，true显示，false隐藏 -->
+        <!-- 4.1.可以同时添加多个类名（在标签里面添加为内联类名） -->
+        <!-- 内联对象形式 -->
+        <p v-bind:class="{active: isActive, textDanger: isActive}">{{message}}</p>
+        <!-- 5.1.可以更强大的添加多个类名，有利于借助更多条件来判断是否添加类名（看着方便） -->
+        <!-- 外联对象形式 -->
+        <p v-bind:class="classObject">{{message}}</p>
+
+        <my_component class="bacName"></my_component>
+        <!-- 6.使用数组方法进行绑定类名（单个添加） -->
+        <p class="abc" v-bind:class="[activeClass, bacClass]">{{message}}</p>
+        <!-- 6.1.使用data容器存放类名，再绑定到标签上（一次添加多个） -->
+        <p v-bind:class="arrayClass">{{message}}</p>
+        <!-- 6.2.使用三元表达式来绑定类名（切换类名可用） -->
+        <p v-bind:class=" isActive? activeClass : bacClass ">{{message}}</p>
+    </div>
+    <div id="app21">
+        <!-- 7.组件上的类名传递，会直接绑定在组件中的最外层容器中（直接添加class） -->
+        <my_component class="bacName"></my_component>
+        <!-- 7.1.组件上的绑定类名传递只能通过isTrue的形式进行添加（其他的形式都不可以）会直接绑定在组件中的最外层容器中 -->
+        <my_component v-bind:class="{arrName:'isActive'}"></my_component>
+    </div>
+    <script>
+        /* 6.3.创建一个全局组件 */
+        Vue.component('my_component', {
+            template: '<h1><p>我是组件内容。测试组件类名</p><p class="active">aaa</p></h1>'
+        })
+        new Vue({
+            el: '#app21'
+        })
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app20',
+            data: {
+                message: '我只是来测试用的',
+                isActive: true,
+                /* 6.3.测试数组形式的绑定类名 */
+                activeClass: 'arrName',
+                bacClass: 'bacName',
+                arrayClass: ['active', 'arrName', 'bacName']
+
+            },
+            /* 5.通过计算属性添加类名（外联类名） */
+            computed: {
+                classObject: function () {
+                    return {
+                        active: this.isActive,
+                        textDanger: this.isActive
+                    }
+                }
+            }
+        })
+
+
+        /*
+        * 总结：对象语法
+        *    普通模式 -- 通过v-bind绑定一个对象，通过对象的形式{...}来添加类名，见 4
+        *    计算属性模式（更强大） -- 通过v-bind绑定一个函数，通过函数return的形式返回 {...}来添加类名，见 5
+        *
+        *
+        * 总结：数组语法
+        *   单个添加 -- 通过v-bind绑定一个data数据，通过数组的形式[...]来添加类名， 见 6
+        *   多个添加 -- 通过v-bind绑定一个data数据，通过在 data数据中书写数组形式来添加类名，见 6.1
+        *   三元表达式 -- 通过三元表达式方式进行添加类名，对两个类名进行切换等操作，见 6.2
+        *
+        *
+        * 总结：类名共存特性 见 7
+        *   共存类名 -- 原有类名（class）和通过v-bind绑定的类名可同时存在
+        *   组件类名绑定 -- 不管通过class形式，还是v-bind形式，都会直接绑定在组件的最外层标签上
+        *   组件绑定（v-bind）类名中，只能用对象的 isTrue 形式才能进行绑定，其他的都不行
+        * */
+    </script>
+</body>
+</html>

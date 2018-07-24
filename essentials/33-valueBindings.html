@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app35">
+        <!-- 4.当默认选中时，picked值为abc即可 -->
+        <input type="radio" id="one" v-model="picked">
+        <label for="one">radio（单选）默认选中就设置值为abc</label>
+        <hr>
+        <hr>
+        <!-- 5.checkedToggle也可以是true或false -->
+        <input type="checkbox" id="two" v-model="checkedToggle">
+        <label for="two">checkedToggle 默认选中也可以为true</label>
+        <hr>
+        <hr>
+        <!-- 6.默认选中一个时selectInfo可以是b（跟value值一样就默认选择） -->
+        <select v-model="selectInfo">
+            <option value="a">A</option>
+            <option value="b">B 跟option中的value值一样即默认选中</option>
+            <option value="c">C</option>
+        </select>
+        <hr>
+        <hr>
+        <!-- 7.复选框,true-value 或 false-value 均可修改绑定的myToggle值 -->
+        <input type="checkbox" v-model="myToggle" true-value="1" false-value="2">
+        <input type="checkbox" v-model="myToggle" true-value="3" false-value="4">
+        <input type="checkbox" v-model="myToggle" true-value="5" false-value="6">
+        <label>点击选中或取消时，复选框（myToggle）的值在不停的变化</label>
+        <hr>
+        <hr>
+        <!-- 8.单选按钮,通过点击均可修改v-model绑定的pick值 -->
+        <input type="radio" v-model="pick" v-bind:value="1">
+        <input type="radio" v-model="pick" v-bind:value="2">
+        <input type="radio" v-model="pick" v-bind:value="3">
+        <label>点击选中或取消时，单选按钮（pick） 的值在不停的变化</label>
+        <hr>
+        <hr>
+        <!-- 9.复选框，内联对象字面量，跟绑定单值一样，只是这里绑定的是对象而已 -->
+        <select v-model="mySelect" style="width: 100px;">
+            <option v-bind:value="{num: 1}">1</option>
+            <option v-bind:value="{num: 2}">2</option>
+            <option v-bind:value="{num: 3}">3</option>
+            <option v-bind:value="{num: 4}">4</option>
+        </select>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app35',
+            data: {
+                /* 4.1.值为abc时 */
+                picked: 'abc',
+                /* 5.1.值为布尔值时 */
+                checkedToggle: true,
+                /* 6.1.值跟value相同时 */
+                selectInfo: 'b',
+                /* 7.1.通过点击不停改变myToggle的值为true/false -value的值 */
+                myToggle: '',
+                /* 8.1.通过点击不断改变pick的值为v-bind:value的值 */
+                pick: 2,
+                /* 9.1.内联对象字面量绑定，理论同上 */
+                mySelect: {
+                    num: 1
+                }
+            }
+        });
+        /*
+        * 总结：值绑定
+        *   对于单选按钮，复选框及选择框的选项，v-model绑定的值通常是静态字符串（对于复选框也可以是布尔值），见 4 - 5 - 6
+        *
+        *   复选框
+        *     - true-value: 当被选中时v-model绑定的值为true-value的值
+        *     - false-value: 当取消选中时v-model绑定的值为false-value的值
+        *     - 他们两个都不会影响输入控件的value特性（就相当于他们现在是value的值，但不是value）
+        *     - 见 7
+        *
+        *   单选按钮
+        *     - v-bind:value='x' 通过绑定他的值，来改变data数据里面的值
+        *     - 见 8
+        *
+        *   选择框选项
+        *     - v-bind:value='{num:1}' 通过内联对象字面量的形式来绑定，其原理与单选按钮的绑定一样
+        *     - 见 9
+        *
+        *   以上是我们有时可能想把值绑定到Vue实例的一个动态属性上，这时需要用v-bind实现，并且这个属性值可以不是字符串。见 7 - 8 - 9
+        *   他们都是以 true/false-value 或 v-bind:value 来修改源数据的。该属性的存在时，他们所绑定的源数据会根据不同情况改变
+        *   这里分为静态字符串 和 实例化Vue的动态属性（源数据）
+        * */
+    </script>
+</body>
+</html>

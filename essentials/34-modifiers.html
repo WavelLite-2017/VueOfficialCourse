@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app36">
+        <!-- 4.正常情况下input绑定的msg源数据 -->
+        <input v-model="msg">
+        <label>input绑定的源数据值：{{msg}}</label>
+        <hr>
+        <hr>
+        <!-- 5.通过修饰符.lazy绑定后的源数据 -->
+        <input v-model.lazy="lazyMsg">
+        <label>input绑定的.lazy源数据值：{{lazyMsg}}</label>
+        <hr>
+        <hr>
+        <!-- 6.通过修饰符.number绑定后的源数据，只要默认值符合要求，input只收录数值类型 -->
+        <input type="number">number类型有箭头
+        <input v-model.number="numberMsg">
+        <label>input绑定的.number源数据值（默认只记录数字，输入其他信息在退出焦点时会被删除）：{{numberMsg}}</label>
+        <hr>
+        <hr>
+        <!-- 7.通过修饰符.trim绑定后的源数据，只要开头有空格在聚焦后会被删除，就是说在input开头和结尾都不会有空白字符出现 -->
+        <input v-model.trim="trimMsg">
+        <label>input绑定的.trim源数据值（默认清除字符串的开头和结尾的空白字符）{{trimMsg}}</label>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app36',
+            data: {
+                /* 4.1.正常方式绑定的值 */
+                msg: '时时更新',
+                /* 5.1.通过修饰符.lazy绑定的值 */
+                lazyMsg: '退出聚焦后更新',
+                /* 6.1.通过修饰符.number绑定的值 */
+                numberMsg: '',
+                /* 7.1.通过修饰符trim绑定的值 */
+                trimMsg: '   2132  32  '
+            }
+        })
+
+        /*
+        * 总结：修饰符
+        *   .lazy 懒惰的更新数据，退出聚焦时更新input里面的数据。见 4 - 5
+        *   .number 只收录数字，其他均不作收录。跟type="number"差不多，不过没有箭头
+        *     - 如果想自动将用户的值输入转为数值类型，可以给v-model添加number修饰符。
+        *     - 这通常很有用，因为即使在type="number"时，HTML输入元素的值也总会返回字符串。（无从查证）
+        *     - 初始值为 - [] 123 '123' '' 均对.number修饰符有效
+        *     - 见 6
+        *   .trim 过滤用户输入的首尾空白字符。见 7
+        *
+        * 总结：在组件上使用 v-model
+        *   HTML原生的输入元素类型并不总能满足需求。幸好，Vue的组件系统允许我们创建具有完全自定义行为且可复用的输入组件，这些输入组件甚至可以和v-model一起使用
+        *     - 对于输入类型，在无法满足的情况下，可以自定义输入组件来达到要求。
+        * */
+    </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- 4.对页面的样式进行处理 -->
+    <style>
+        span {
+            border: 1px solid #000;
+            padding: 20px;
+            display: block;
+            width: 50%;
+            margin: 50px auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- 2.建立对应的坑 -->
+    <div id="app3">
+        <span v-bind:title = 'message'>
+            鼠标悬停几秒钟查看此处动态绑定的提示信息！
+        </span>
+    </div>
+    <script>
+        /* 3.把数据通过data绑定到页面上去 */
+        const app3 = new Vue({
+            el: '#app3',
+            data: {
+                message: '页面加载于' + new Date().toLocaleString()
+            }
+        })
+        /* 此处报红线是箭头函数导致的 */
+        setTimeout(() => {
+            app3.message = '你有新的加载信息'
+        },5000)
+    </script>
+</body>
+</html>

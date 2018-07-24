@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app30">
+        <!-- 4.通过事件处理，监听了事件counter的增加情况 -->
+        <button @click="counter++">Add</button>
+        <p>按钮点击每次加一：当前值为 {{counter}}</p>
+        <hr>
+        <!-- 5.2.v-on绑定click事件，绑定方法greet -->
+        <button v-on:click="greet">欢迎世界</button>
+        <hr>
+        <hr>
+        <hr>
+        <!-- 6.在内联javascript语句中调用函数方法 -->
+        <button v-on:click="say('Hi')">Hi</button>
+        <button v-on:click="say('Hello')">Hello</button>
+        <hr>
+        <!-- 7.在内联javascript语句中处理原生DOM事件 -->
+        <a href="#" v-on:click="label('我在这里才不会告诉你，A标签的默认跳转事件被阻止了', $event)">Event原生DOM事件</a>
+        <a href="#">a标签的默认跳转事件没有被阻止</a>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app30',
+            data: {
+                /* 4.1.简单逻辑运算初始值 */
+                counter: 0,
+                useName: 'Vue.js'
+            },
+            methods: {
+                /* 5.事件处理方法，处理复杂逻辑的地方，配合v-on渲染到页面中 */
+                greet: function () {
+                    alert('Hello '+ this.useName + '!')
+                    /* 5.1.event事件为原生DOM事件 */
+                    if(event) {
+                        console.log(event)
+                        alert(event.target.tagName)
+                    }
+                },
+                /* 6.1.通过v-on调用函数方法 */
+                say: function (message) {
+                    alert(message)
+                },
+                /* 7.1.在内联JavaScript语句中被调用的函数 */
+                label: function (str, event) {
+                    console.log(event)
+                    if(event) {
+                        /* 7.2.阻止默认事件发生 */
+                        event.preventDefault()
+                        alert(event.target.tagName)
+                    }
+                    alert(str)
+                }
+            }
+        });
+        /* 5.3.也可以直接调用方法，这没有触发event事件 */
+        vm.greet()
+
+        /*
+        * 总结：监听事件
+        *   v-on用于监听DOM事件，并触发时运行一写javaScript代码。
+        *     - 可直接在标签上进行逻辑运算（只是简单的运算），也可以在标签上绑定方法（复杂的运算）进行运算等操作。见 事件处理方法
+        *     - 简写为@click='xx'，整写为v-bind:click='xx'。见 4
+        *
+        * 总结：事件处理方法
+        *   许多事件处理的逻辑更为复杂，就不能把javaScrip代码写在v-on指令中是不可行的，需要一个方法来存载该代码，再通过v-on绑定方法即可。见 5
+        *     - 原始DOM事件 event
+        *     - 可直接调用方法，亦可在v-on指令中绑定该方法。或者在v-on中（内联 JavaScript 语句中）调用该方法，见 内联处理器中的方法
+        *
+        * 总结：内联处理器中的方法
+        *   在v-on中可以绑定方法，也可以在内联JavaScript语句中直接调用方法。也就是再v-on中以调用的形式来处理。见 6
+        *   例子：v-on:click="say('hi')"
+        *
+        *   有时候需要在内联语句处理器中访问原始的DOM事件，可以用特殊变量 $event 把他传入进方法中进行处理
+        *   例子：v-on:click="label($event)"，见 7
+        * */
+    </script>
+</body>
+</html>

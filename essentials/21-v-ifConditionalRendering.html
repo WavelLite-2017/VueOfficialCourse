@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app23">
+        <!-- 4.让满足条件的元素显示在页面上 -->
+        <h1 v-if="ok">Yes</h1>
+        <p v-else>No</p>
+        <!-- 6.在vue中使用template元素时，页面上不会显示template元素 -->
+        <template v-if="ok">
+            <h2>template标签</h2>
+            <h3>不会显示template标签</h3>
+            <h4>v-if为条件判断语句</h4>
+        </template>
+        <!-- 7.v-if / v-else-if / v-else 条件顺序为 高-中-低 -->
+        <p v-if="ok">明天端午节了</p>
+        <p v-else-if="elseif">是的</p>
+        <p v-else>我要出去玩</p>
+
+        <!-- 8.不使用key的情况，打开控制台，点击的时候观察标签的变化，input标签默认没有被更新 -->
+        <template v-if="loginType === 'username'">
+            <label>Username</label>
+            <input placeholder="Enter your username">
+            <!-- 8.3.使用key来管理可复用的元素，给input加上key属性，观察标签变化，发现重新渲染了标签 -->
+            <input placeholder="1111111111111" key="a">
+            <!-- 8.4.当标签一样，内容一样时，他们就不会被重新加载 -->
+            <p>我这个元素不会被重新加载</p>
+        </template>
+        <template v-else>
+            <label>Email</label>
+            <input placeholder="Enter your email address">
+            <!-- 8.3.给input加上key属性，观察标签变化，发现重新渲染了标签 -->
+            <input placeholder="2222222222222" key="b">
+            <!-- 8.4.当标签一样，内容一样时，他们就不会被重新加载 -->
+            <p>我这个元素不会被重新加载</p>
+        </template>
+        <button v-on:click="loginTypeBtn">Toggle login type</button>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app23',
+            data: {
+                ok: true,
+                elseif: true,
+                /* 8.1.设置一个满足条件 */
+                loginType: 'username'
+            },
+            methods: {
+                /* 8.2.点击改变条件达到重新渲染要求 */
+                loginTypeBtn: function () {
+                    if(this.loginType === 'username'){
+                        this.loginType = 'email'
+                    } else {
+                        this.loginType = 'username'
+                    }
+                }
+            }
+        })
+        /* 5.切换ok值满足v-else条件 */
+        setTimeout(function () {
+            vm.ok = false;
+            vm.elseif = false
+        },2000)
+
+        /*
+        * 总结：v-if条件渲染
+        *   v-if通过data数据池的信息进行渲染，满足true时显示，false不显示，见4
+        *   template元素不会显示在页面上，见6
+        *
+        *   v-else 元素必须紧跟在v-if或者v-else-if后面，否则将不会被识别，见7
+        *
+        *   v-if、v-else-if、v-else三者顺序不能变动，见7
+        *
+        * 总结：用key管理可复用的元素：（key（随意取的名字）是唯一值）
+        *   不使用key的情况（可理解为默认key相同），为了能高效的渲染，系统默认复用部分标签的情况，让标签不重新加载。见8，8.4
+        *   使用key的情况（key相同）：同上情况一样。见8
+        *   使用key的情况（key不相同）：添加key值来让页面上的标签重新渲染。见8.3
+        * */
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app26">
+        <p v-for="item in myArr">{{item}}</p>
+    </div>
+    <script>
+        const vm = new Vue({
+            /* 3.创建一个Vue实例，绑定一个坑 */
+            el: '#app26',
+            data: {
+                myArr: [3, 60, 8, 4, 6, 50, 1, 2, 5, 7, 9, 10, 20, 30, 40]
+            }
+        });
+
+        /* 5.数组替换，返回新的数组 */
+        /*example1.items = example1.items.filter(function (item) {
+            return item.message.match(/Foo/)
+        })*/
+        vm.myArr = vm.myArr.filter(function (item) {
+            return item<10;
+        })
+        /* 4.变异方法，对现有数组进行增删改查等操作，下面如数组的方法 */
+        setTimeout(function () {
+            vm.myArr.push(10);
+            console.log('在数组后面添加一个元素')
+        },1000);
+        setTimeout(function () {
+            vm.myArr.pop();
+            console.log('在数组后面删除一个元素')
+        },2000);
+        setTimeout(function () {
+            vm.myArr.unshift(10);
+            console.log('在数组前面添加一个元素')
+        },3000);
+        setTimeout(function () {
+            vm.myArr.shift();
+            console.log('在数组前面删除一个元素')
+        },4000);
+        setTimeout(function () {
+            vm.myArr.sort();
+            console.log('对数组进行排序')
+        },5000);
+        setTimeout(function () {
+            vm.myArr.reverse();
+            console.log('翻转数组')
+        },5000);
+        setTimeout(function () {
+            vm.myArr.splice(4);
+            console.log('截取数组元素')
+        },7000);
+
+        /* 6.注意事项，普通方式可以改变数组但不能重新渲染页面 */
+        /* 7.对应的解决方案 */
+        setTimeout(function () {
+            /* 6.1.值已经被改变，但是没有触发页面的更新 */
+            vm.myArr[1] = 'x';
+            console.log(vm.myArr);
+
+            /* 7.1.利用Vue.set() 或者 他的别名 vm.$set() */
+            Vue.set(vm.myArr, 2, 'y')
+            console.log(vm.myArr, '7.1.')
+            /*
+             * 7.2.通过splice自身的特性来修改数组后更新页面
+             *    Array.prototype.splice
+             *    splice(beginIndex, endIndex, replaceValue)
+             *    beginIndex： 开始索引
+             *    endIndex： 结束索引。 为0时则表示新增
+             *    replaceValue： 从开始索引到结束索引之间的值都替换为该值
+             * */
+            vm.myArr.splice(2, 0, 'SAr')
+            console.log(vm.myArr)
+        },8000);
+        setTimeout(function () {
+            /* 6.2.数组已经被改变，变成长度为2的数组（只有[9, 'x']了），但是还是没有触发页面的更新 */
+            vm.myArr.length = 2;
+            console.log(vm.myArr)
+        },9000);
+
+        /*
+        * 总结：变异方法
+        *   该方法是数组的方法，每次变异会触发视图更新。且都改变原始数组,见 4
+        *
+        * 总结：替换数组
+        *   非变异方法，不会改变原始数组，但总是返回一个新的数组。见 5
+        *   使用非变异方法时，可以用新数组替换旧数组。
+        *   注意：看似Vue对DOM进行了重新渲染这个列表，其实不是的，Vue把相同列表内容的元素没做渲染。（即重用了该元素）
+        *   见 21-ifConditionalRendering.html 中 8
+        *   example1.items = example1.items.filter(function (item) {
+        *       return item.message.match(/Foo/)
+        *   })
+        *
+        * 总结：注意事项（不被渲染的数组及解决方案）
+        *   以下是由于 JavaScript 的限制，Vue 不能检测以下变动的数组：
+        *       1 - 当你利用缩影直接设置一个项时，例如 vm.items[indexOfItem] = newValue，见 6.1
+        *       2 - 当你修改数据的长度时，例如 vm.items.length = newLength
+        *   以下是对应的解决方案：
+        *       1 - Vue.set(vm.items, indexOfItem, newValue)， 见 7.1
+        *       1.1 - vm.items.splice(indexOfItem, 1, newValue)，见7.2
+        *
+        *       2 - vm.items.splice(newLength) 见 4 中的splice 及 7.2中的
+        *
+        * */
+    </script>
+</body>
+</html>

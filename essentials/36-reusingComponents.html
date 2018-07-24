@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app38">
+        <!-- 5.复用起来了，他们各自点击各自增加 -->
+        <button-counter></button-counter>
+        <br>
+        <button-counter></button-counter>
+        <br>
+        <button-counter></button-counter>
+        <br>
+        <button-counter></button-counter>
+        <br>
+        <p>他们的次数互不干扰~~！</p>
+        <!-- 6.复用起来了，不过他们是相互影响的 -->
+        <impactdata-counter></impactdata-counter>
+        <br>
+        <impactdata-counter></impactdata-counter>
+        <br>
+        <impactdata-counter></impactdata-counter>
+        <br>
+        <impactdata-counter></impactdata-counter>
+        <br>
+        <p>他们之间的次数相互影响~~！</p>
+    </div>
+    <script>
+        /* 4.定义全局组件，以供复用 */
+        Vue.component('button-counter', {
+            template: `<div><button @click="count++">点击按钮增加次数：这是第 {{count}} 次</button></div>`,
+            data: function () {
+                return {
+                    count: 0
+                }
+            }
+        })
+        /* 6.data中的数据如果不在里面定义的话（外引的对象），导致他们的指针一样，所以都相互影响 */
+        const dataImpactObj = {
+            countFooNum: 0
+        }
+        /* 6.1.Data名称不能出现在组件名中。 */
+        Vue.component('impactdata-counter', {
+            template: `<div><button @click="countFoo">通过方法形式改变次数： {{countFooNum}}</button></div>`,
+            data: function () {
+                return dataImpactObj
+            },
+            /* 以上data赋值后为一个对象而不是一个函数 */
+            /*data: {
+                countFooNum: 0
+            },*/
+            methods: {
+                countFoo: function () {
+                    return this.countFooNum++
+                }
+            }
+        })
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app38'
+        })
+
+        /*
+        * 总结：组件的复用
+        *   组件可以进行任意次数的复用。见 5
+        *   注意：每当我们点击按钮时，每个组件都会各自独立维护他的count，也因此告诉我们各自有对应的Vue实例
+        *
+        * 总结：data必须是一个函数
+        *   函数有自己的独立作用域，所以他们里面的定义可以互不干扰。
+        *
+        *   如果我们的data的数据没有独立的作用域（data不是一个函数），那么他们的情况就会相互影响。某一个改变，其他的必然改变。见 6
+        *   组件名不能定义 Data相关名称，如abcData | ncsDatadhks 这些都是不可以的
+        *
+        * 总结：组件的组织
+        *   组件是以嵌套的组件树形式来组织的
+        *               -------------
+        *               -     A     -
+        *               -------------
+        *               |     |     |
+        *               B     B     B
+        *            |``|        |``|``|
+        *            C  C        C  C  C
+        *   比如：我们有页头、侧边栏、内容区等组件，每个组件又包含了其他的像导航链接、博文之类的组件。从而形成一个完整的嵌套树。见 上图
+        *   两种组件：
+        *     - 全局注册：Vue.component('xxx',{...}) => 通过Vue.componet()来注册的为全局注册。
+        *         - 全局组件注册后通过new Vue()来创建的新根实例从而调用
+        *         - 也可被其组件树中的所有子组件的模板中调用
+        *     - 局部注册：见后面的组件注册
+        *
+        * */
+    </script>
+</body>
+</html>

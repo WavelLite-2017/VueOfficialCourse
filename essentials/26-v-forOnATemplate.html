@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+    <style>
+        .divider {
+            background-color: #000;
+        }
+    </style>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app28">
+        <ul>
+            <!-- 4.一般展示数据情况 -->
+            <li v-for="(item, key, index) in msg">{{key}} 第 {{index+1}} 位仁兄说：{{item}}</li>
+            <!-- 5.通过template元素展示数据情况 -->
+            <template v-for="item in msg">
+                <li>我是通过template元素标签来展示的对话：{{item}}</li>
+                <!-- 盲人标签属性role -->
+                <li class="divider" role="密码">111</li>
+            </template>
+        </ul>
+
+        <!-- 6.v-for与v-if处于同一节点上。针对某些数据进行处理 -->
+        <p v-for="item in myArr" v-if="item>40">{{item}}</p>
+        <!-- 7.当需要有条件的跳过循环的执行时的情况 -->
+        <template v-if="myArr.length">
+            <p v-for="item in myArr">{{item}}</p>
+        </template>
+        <p v-else>No myArr left！</p>
+    </div>
+    <script>
+        const vm = new Vue({
+            /* 3.创建一个Vue实例，绑定一个坑 */
+            el: '#app28',
+            data: {
+                msg: {
+                    a: '你的大骗子',
+                    b: '我不骗你我骗谁',
+                    c: '你可以骗别人呀',
+                    d: '你傻好骗，哈哈哈哈'
+                },
+                myArr: [52, 12, 53, 11, 24, 35, 67, 23, 21, 63]
+            }
+        })
+
+        /*
+        * 总结：v-for on a <template>
+        *   template标签不显示在页面上，可以用在平时不想在标签里面上添加数据循环情况下使用。见 5
+        *
+        *
+        * 总结：v-for with v-if
+        *   当他们存在同一节点时，v-for的优先级比v-if要高，这表示v-if将作用域每一个v-for循环中，当你想某一些项渲染节点是，这种优先级的机制会十分有用。见 6
+        *
+        *   如果你的目的是有条件地跳出循环的执行，那么将v-if置于外层元素或者template上。见 7
+        * */
+    </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app34">
+        <hr>
+        <hr>
+        <hr>
+        <!-- 4.1.通过插值表达式获取data里面的数据 -->
+        <p>打印input的内容：{{message}}</p>
+        <p v-model="message">在这些标签上使用v-model会被报错</p>
+        <hr>
+        <hr>
+        <hr>
+        <!-- 4.通过v-model绑定data里面的数据，伴侣搭档（v-model与input|textarea） -->
+        <input type="text" placeholder="edit me"  v-model="message" value="伴侣搭档">
+        <hr>
+        <hr>
+        <hr>
+        <!-- 5.对多行文本进行绑定 -->
+        <textarea v-model="textareaMessage" placeholder="edit me"></textarea>
+        <hr>
+        <!-- 5.1.通过white-space属性进行换行 -->
+        <p>打印textarea中的多行文本：</p>
+        <p style="white-space: pre-line;">{{textareaMessage}}</p>
+        <hr>
+        <hr>
+        <hr>
+        <!-- 6.复选框v-model绑定checked -->
+        <input type="checkbox" id="clickTextChangeBox" v-model="checked">
+        <label for="clickTextChangeBox">单个复选框{{checked}}</label>
+        <hr>
+        <hr>
+        <hr>
+        <!-- 7.多个复选框，绑定一个数组，选中则把value的值放入到数组中，取消则删除数组的对应值 -->
+        <input type="checkbox" id="Jack" value="1-Jack" v-model="checkBoxArr">
+        <label for="Jack">Jack</label>
+        <input type="checkbox" id="John" value="2-John" v-model="checkBoxArr">
+        <label for="John">John</label>
+        <input type="checkbox" id="Mike" value="3-Mike" v-model="checkBoxArr">
+        <label for="Mike">Mike</label>
+        <p>Checked names: {{checkBoxArr}}</p>
+        <hr>
+        <hr>
+        <hr>
+        <!-- 8.单选按钮，多个选项中只选择一个 -->
+        <input type="radio" id="one" v-model="picked" value="one">
+        <label for="one">包子</label>
+        <input type="radio" id="two" v-model="picked" value="two">
+        <label for="two">面包</label>
+        <input type="radio" id="three" v-model="picked" value="three">
+        <label for="three">馒头</label>
+        <p>{{picked}}</p>
+        <hr>
+        <hr>
+        <hr>
+        <!-- 9.选择框单选时 -->
+        <select v-model="selectSingle">
+            <!-- 9.2.deabled禁止选择，value是为了绑定的初始值显示 -->
+            <option value="" disabled>请选择</option>
+            <option>A</option>
+            <option>B</option>
+            <option>C</option>
+        </select>
+        <p>当前选中（绑定数据并打印）：{{selectSingle}}</p>
+        <hr>
+        <hr>
+        <hr>
+        <!-- 10.选择框多选时，通过multiple设置该select为多选框（一次显示多个数据在页面上） v-model绑定初始值 -->
+        <select multiple style="width: 120px; height: 200px;" v-model="multipleArr">
+            <option>A</option>
+            <option>B</option>
+            <option>C</option>
+            <option>D</option>
+            <option>E</option>
+            <option>F</option>
+        </select>
+        <p>当前选中（绑定数据并打印）：{{multipleArr}}</p>
+        <hr>
+        <!-- 10.1.动态获取option数据 -->
+        <select multiple style="width: 120px; height: 200px;" v-model="vforMultipleArr">
+            <option v-for="item in option" :key="item.id">{{item.text}}</option>
+        </select>
+        <p>当前选中（绑定数据并打印）：{{vforMultipleArr}}</p>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app34',
+            data: {
+                /* 4.1.在这里设置v-model的初始值 */
+                message: '',
+                textareaMessage: '',
+                checked: false,
+                /* 7.1.数组中有值则被选择，没有则不选中 */
+                checkBoxArr: ["3-Mike"],
+                /* 8.1.单选按钮，控制多个选中其中一个的数据 */
+                picked: '',
+                /* 9.1.选择框单选数据，单值 */
+                selectSingle: '',
+                /* 10.2.选择框多选数据，数组 */
+                multipleArr: [],
+                /* 10.3.选择框动态获取option数据 */
+                option: [{
+                    id: 1,
+                    text: 'Ao'
+                },{
+                    id: 2,
+                    text: 'Bo'
+                },{
+                    id: 3,
+                    text: 'Co'
+                },{
+                    id: 4,
+                    text: 'Do'
+                },{
+                    id: 5,
+                    text: 'Eo'
+                }],
+                vforMultipleArr: []
+            }
+        })
+
+        /*
+        * 总结：基础用法
+        *   灵魂伴侣：v-model与input通过data中的数据进行双向数据绑定，从而在input或textarea中输入在也页面就能及时展示。
+        *   v-model 本质上就是语法糖，负责监听用户的输入事件以更新数据，并对一些极端场景进行一些特殊处理。
+        *     - v-model 会忽略所有表单元素的 value checked selected 特性的初始值。见 4
+        *     - v-model 会通过Vue实例的数据作为数据来源。在data中进行初始值。见 4.1
+        *     - 对于需要使用输入法的语言，会发现v-model不会再输入法组合文字过程中共得到更新（表示不明白，难道说的只会在input或textarea这样的标签上才有用么？）
+        *
+        *   文本
+        *     - input上使用v-model。见 4
+        *
+        *   多行文本
+        *     - textarea上使用v-model。见 5
+        *     - 多行文本需要配合css属性 white-space来进行分行。见 5.1
+        *     - 在文本区域插值 (<textarea></textarea>) 并不会生效，应用 v-model 来代替。不明白码子意思
+        *
+        *   复选框
+        *     - 单个复选框绑定到布尔值，主要绑定的是checked，没被选中为false，选择为true，见 6
+        *     - input类型为checkbox，见 6
+        *
+        *     - 多个复选框，绑定到同一个数组
+        *     - 通过v-model绑定一个数组后，选择该选项则添加对应的input中的value值到数组中，取消则删除。见 7 -- 7.1
+        *
+        *   单选按钮
+        *     - 单选按钮必备信息（v-model（多个选项同时绑定一个数据），value（通过绑定唯一的值，并赋值给Vue实例数据），radio（单选特定input属性））
+        *     - v-model绑定初始值，通过选择选项修改初始值，从而让选择者加上checked属性，见 8
+        *
+        *   选择框
+        *     - 单选时：必备属性（v-model（绑定控制数据），value（控制初始值），disabled（在选择中禁止选项））
+        *       - 如果v-model表达式的初始值没有匹配任何选项，在select元素中共将被渲染为‘未选中’状态。比 value='' 对应了数据 selectSingle: ''
+        *       - 在IOS中，如果没有匹配初始值，IOS不会触发change事件。所有推荐设置一个值为空的禁用选项，见 9
+        *     - 多选时：必备属性（multiple（设置select为多选的属性）、v-model（绑定控制数据））
+        *       - 可通过v-for来动态设置多选数据，见 10 - 10.1
+        * */
+    </script>
+</body>
+</html>

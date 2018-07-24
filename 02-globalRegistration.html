@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <div id="app2">
+        <!-- 1.3.全局组件调用 -->
+        <component-a></component-a>
+        <component-b></component-b>
+        <component-c></component-c>
+        <hr>
+        <hr>
+        <hr>
+        <hr>
+        <!-- 2.2.局部注册组件，通过var来定义 -->
+        <component_one></component_one>
+        <component_two></component_two>
+        <component_three></component_three>
+    </div>
+    <script>
+        /* 1.全局注册组件（目前只用了这个，还有局部注册组件） */
+        /* 1.1.全局注册完毕后，通过new Vue()绑定到页面中去。可以随意调用在多个中 */
+        /* 1.2.并且在全局组件中可以调用除自身以外的所有组件(哪怕其他组件包含了自身组件也不行)，成死循环了 */
+        Vue.component('component-a', {
+            template: `<div>组件A<hr><component-c></component-c><hr></div>`
+        })
+        Vue.component('component-b', {
+            template: `<div>组件B</div>`
+        })
+        Vue.component('component-c', {
+            template: `<div>组件C</div>`
+        })
+        /* 2.局部注册，全局注册一般用于公共类的组件，而局部注册为了保证在不需要的时候可以不用加载到js文件中。 */
+        /* 2.1.用普通的定义方式来定义组件，template定义组件内容 */
+        const componentOne = {template:`<div>One</div>`};
+        /* 2.4.在局部组件中，不能直接用组件名调用，需要像webpack、label、普通调用方式（2.5）那种引用组件 */
+        const componentTwo = {template:`<div>Two<component_three></component_three></div>`};
+        /* 2.5.普通调用方式：如果需要调用则需要这样写，通过components对象来引用定义的组件名，在template中调用 */
+        const componentThree = {components: {'component_one': componentOne}, template:`<div>Three <hr><component_one></component_one><hr></div>`};
+        /*
+        * 2.6.webpack或label调用方式
+        *
+        * import componentOne from './abc/aa'
+        * export default {
+        *   // 用在模板中的自定义 元素的名称        // 包含了这个组件选项的变量名
+        *   components: { componentOne } || { component_one: componentOne },
+        *   template: `<div><componentOne></componentOne></div>` || `<div><component_one></component_one></div>`
+        * }
+        * */
+        const vm = new Vue({
+            el: '#app2',
+            data: {
+
+            },
+            /* 2.3.局部组件注册的地方。component_one组件名，componentOne 字变量const定义的组件信息 */
+            components: {
+                component_one: componentOne,
+                component_two: componentTwo,
+                component_three: componentThree
+            }
+        })
+
+        /*
+        * 总结：全局注册
+        *   通过Vue.component()来注册的都是全局组件。可以在任意新创建的Vue实例中（new Vue）调用，见 1.3
+        *   在所有子组件中，也可以在其各自内部组件中相互使用，但不能调用自身或调用组件中包括自身组件也是不可以的。会变成死循环
+        *
+        * 总结：局部注册
+        *   当我们不想让不用的组件也在最终的构建结果中，那么我们需要用到局部注册。
+        *   通过普通方式来注册局部组件。见 2.1
+        *     - 通过new Vue中的components对象中确定组件名和组件信息绑定。见 2.3
+        *     - 通过页面调用组件名从而渲染页面。见 2.2
+        *
+        *   想通过Es6的label或者webpack来进行应用组件。见 2.6
+        *
+        *   注意：
+        *     - 在局部注册的组件在其子组件中不可用。需要用的话见 2.5或者 2.6
+        *     - 在Es2015+中，在对象中放一个类似 componentOne 的变量名其实是 componentOne: componentOne的缩写，这个变量名同时时：
+        *         - 用在模板中的自定义 元素的名称
+        *         - 包含了这个组件选项的变量名
+        *
+        * */
+    </script>
+</body>
+</html>

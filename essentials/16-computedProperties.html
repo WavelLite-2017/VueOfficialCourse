@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app17">
+        <!-- 4.模板里面可以做简单的表达式即可，他的设计初衷并不是做大而复杂的逻辑。而在模板中逻辑过重会让我们难以维护 -->
+        <!-- 4.1.这里是对message做简单的字符串翻转处理，如果多次调用的话也得多次的使用翻转处理。这样就很不方便了 -->
+        <p>{{ message.split('').reverse().join('') }}，在模板里面进行逻辑处理</p>
+        <!-- 5.计算后渲染页面 -->
+        <p>{{reverseMessage}}，通过计算属性的getter渲染</p>
+        <p>{{reverseMessage1()}}，通过函数方法调用渲染</p>
+        <!-- 6.再次调用计算属性的getter渲染，以及函数方法调用渲染。我们看控制台中打印了两次 reverseMessage1() -->
+        <p>{{reverseMessage}}，通过计算属性的getter渲染</p>
+        <p>{{reverseMessage1()}}，通过函数方法调用渲染</p>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app17',
+            data: {
+                message: 'HELLO VUE!'
+            },
+            /* 5.计算属性，对于任何复杂的逻辑 */
+            computed: {
+                /* 计算属性的 getter */
+                reverseMessage: function () {
+                    console.log(Date.now(),1)
+                    return this.message.split('').reverse().join('')
+                }
+            },
+            /* 6.比较计算属性getter与函数方法methods的区别 */
+            /*
+             * 6.1.计算属性：
+             *     是基于他们的依赖进行的缓存，只有在他们的依赖改变时，才会重新赋值。
+             *     也就是说在一个实例中多次调用时只计算一次即可；
+             *
+             * 6.2.函数方法：
+             *     每次触发重新渲染时，调用方法 总会 再次执行函数
+             *     也就是说他们是调用一次执行一次，通过Date.now()可以看出；
+             *
+             * 相同：
+             *     他们得到的最终结果是完全相同的
+             * */
+            methods: {
+                reverseMessage1: function () {
+                    console.log(Date.now(),2)
+                    return this.message
+                }
+            }
+        });
+
+        /*
+        * 总结：计算属性
+        *    计算属性在页面中进行逻辑计算的，是在创建实例完成后执行，里面的getter函数可以在页面上直接渲染 见5
+        *    计算属性里面可以像普通属性一样在模板中绑定计算属性  如 {{reverseMessage}} 像 {{message}} 一样调用方式
+        *    vm.reverseMessage 依赖于 vm.message，因此 vm.message 改变时，所有依赖 vm.reverseMessage 也会跟着更新。
+        *    计算属性的getter函数是没有副作用的，这使它更易于测试和理解。
+        *
+        * 总结：计算属性缓存
+        *    计算属性是基于依赖而进行缓存的，当依赖发生改变时，计算属性函数就会再次执行，反之则不执行。那怕多次调用计算属性的函数，也只执行一次。
+        *    如果需要不希望有缓存，请在methods中书写函数进行调用，他们之间的最后结果是相同的。
+        *    见 6
+        * */
+    </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app39">
+        <!-- 5.1.v-bind:xx='xxx'绑定数据进行传递进入组件 xx不能为驼峰命名法 -->
+        <!-- 5.2.blog_info为注册的prop，通过组件中的props接收了他。见5.3 -->
+        <blog-title :blog_info="blogTitle"></blog-title>
+        <hr>
+        <hr>
+        <ul>
+            <blog-title-two v-for="item in blogTitle" :title1="item.title" :key="item.id"></blog-title-two>
+        </ul>
+    </div>
+    <script>
+        /* 4.注册全局组件 */
+        /* 5.直接把数据全部传递过去在进行循环 */
+        Vue.component('blog-title', {
+            /* 5.3.props接收注册的prop */
+            props: ['blog_info'],
+            template: `<ul><li v-for="item in blog_info" :key="item.id">{{item.title}}</li></ul>`
+        })
+        /* 6.直接把单个数据传递过去后直接渲染页面，为每一个成员渲染一个组件 */
+        Vue.component('blog-title-two', {
+            props: ['title1'],
+            template: `<li>{{title1}}</li>`
+        })
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app39',
+            data: {
+                blogTitle: [{
+                    id: 1,
+                    title: '周冬雨很有灵气 不接受任何反驳 石家庄的妹子就是很灵'
+                }, {
+                    id: 2,
+                    title: '爱和爱过，多了一个字，却隔了一个曾经'
+                }, {
+                    id: 3,
+                    title: '我被黑夜冲昏了头，差点就要说想你了'
+                }, {
+                    id: 4,
+                    title: '封面是我的小精灵呀'
+                }]
+            }
+        });
+
+        /*
+        * 总结：通过Prop向子组件传递数据
+        *   prop是在组件上注册一些自定义特性。当一个值被传递给一个prop特性的时候，他就变成了这个组件实例的一个属性。
+        *   在子组件中我们通过props选项来接收传递过来prop。
+        *   一个组件可以拥有任意数量的prop。外界任何值都可以传递给prop，再用v-bind绑定prop并发送给组件，在用组件内部的props接收。
+        *
+        *   运用场景：在我们一开始不清楚要渲染的具体内容，比如从一个API获取博文列表的时候，是非常有用的。见6
+        * */
+    </script>
+</body>
+</html>

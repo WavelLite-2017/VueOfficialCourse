@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app25">
+        <!-- 4.v-for指令需要使用 item in items形式的特殊语法。 -->
+        <ul>
+            <li v-for="item in items">{{item.text}}</li>
+        </ul>
+        <!-- 5.v-for支持一个可选的第二个参数 index -->
+        <!-- 5.1.可以用 of 来代替 in 作为代替分隔符，因为他是最接近JavaScript迭代器的语法 -->
+        <p v-for="(item, index) of items">这是索引为 {{index}} 的对象中的文字信息 {{item.text}} 和 ID号 {{item.id}}</p>
+        <!-- 6.一个对象的v-for -->
+        <p v-for="value in myObject">{{value}}</p>
+        <!-- 6.1.支持一个可选的第二个参数key -->
+        <p v-for="(value, key) in myObject">{{key}} : {{value}}</p>
+        <!-- 6.2.支持一个可选的第三个参数index -->
+        <p v-for="(value, key, index) in myObject">属性名 {{key}} : 属性值 {{value}} : 对象索引 {{index}}</p>
+        <!-- 7.绑定key的唯一，不能重复不然会被报错 -->
+        <span v-for="item of numberObject" :key="item.id">{{item.info}}、</span>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app25',
+            /* 4.1.源数据组 */
+            data: {
+                items: [{
+                    id: 1,
+                    text: '蔬菜'
+                },{
+                    id: 2,
+                    text: '白菜'
+                },{
+                    id: 3,
+                    text: '花生'
+                },{
+                    id: 4,
+                    text: '玉米'
+                },{
+                    id: 5,
+                    text: '萝卜'
+                }],
+                /* 6.3.一个对象的源数据 */
+                myObject: {
+                    first: 'S',
+                    name: 'Ar',
+                    age: 28
+                },
+                /* 7.1.key的唯一性 */
+                numberObject: [
+                    {id: 1,info: 1},
+                    {id: 2,info: 2},
+                    {id: 3,info: 3},
+                    {id: 4,info: 4},
+                    {id: 5,info: 5},
+                    {id: 6,info: 6},
+                    {id: 7,info: 7},
+                    {id: 8,info: 8},
+                    {id: 9,info: 9},
+                    {id: 10,info: 10},
+                    {id: 11,info: 11},
+                    {id: 12,info: 12},
+                    {id: 13,info: 13},
+                    {id: 14,info: 14},
+                    {id: 15,info: 15},
+                    /* id重复会被报错 */
+                    {id: 15,info: 15}
+                ]
+            }
+        })
+
+        /*
+        * 总结：用v-for把一个数组对应为一组元素
+        *   v-for指令需要使用 item in items形式的特殊语法，items是源数据组。item是数组元素迭代的别名
+        *   如 [A, B, C]是items，那么 A/B/C 就是item，见4
+        *
+        *   v-for块中，我们用于对父作用域属性的完全访问权限，v-for还支持一个可选的第二个参数为当前项的索引。见5
+        *   在item in items中，我们还可以用 of 代替 in 来做分隔符。因为他是最接近JavaScript迭代器的语法。
+        *   迭代器：能追踪下一个元素的信息
+        *
+        * 总结：一个对象的迭代，见6
+        *   第一个参数：value -- 可以用 v-for 通过一个对象的属性来迭代 --键值--
+        *   第二个参数：key -- 提供了第二个可选参数为 --键名--
+        *   第三个参数：index -- 也提供了第三个可选参数为 --索引--
+        *
+        *   注意：在遍历对象时，是按 Object.keys() 的结果遍历，但是不能保证它的结果在不同的 JavaScript 引擎下是一致的。
+        *   Object.keys() =》 该方法是从数组或者对象中提取出他们的属性名（数组的索引或对象的属性名）。
+        *   如果对象中的属性名为数字，那么提出出来的会进行顺序排列
+        *
+        * 总结：key（在这里这只是其中一种作用）
+        *   v-for 默认用“就地复用”策略，如果数据的顺序被改变，Vue将不会移动DOM元素来匹配数据项的顺序，而是简单复用此处每个元素，
+        *   并且确保他在特定索引下显示已被渲染过的每个元素。这种默认的模式是高效的，但是只适用于 不依赖子组件状态或者临时DOM状态（如表单输入值）的列表渲染输出。
+        *
+        *   为了给Vue一个提示，以便他能追踪每个节点身份，从而重用和重新排序现有元素，所以需要提供唯一标识。key属性：
+        *   简写：见 7
+        *   尽量在使用v-for的时候，提供key，除非遍历输出的DOM内容非常简单，或者是可以依赖默认行为以获取性能上的提升（不清楚的话可理解为只要不报错就可以不用key）
+        * */
+    </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+    <style>
+        .myClasee {
+            color: blue
+        }
+    </style>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app16">
+        <!-- 4.完整语法（v-bind没有缩写的样式） -->
+        <p v-bind:class="isTrue">{{message}}</p>
+        <!-- 4.1.缩写 -->
+        <p :class="isTrue">{{message + '我是简写的v-bind =》 :bind '}}</p>
+
+        <p>{{num}}</p>
+        <!-- 5.完整语法（v-on没有缩写的样式） -->
+        <button v-on:click="numUp">按钮</button>
+        <!-- 5.1.缩写 -->
+        <button @click="numSubtract">按钮</button>
+    </div>
+<script>
+    /* 3.创建一个Vue实例，绑定一个坑 */
+    const vm = new Vue({
+        el: '#app16',
+        data: {
+            message: '缩写的情况',
+            /* 4.v-bind的缩写测试示例，绑定类名 */
+            isTrue: 'myClasee',
+            num: 0
+        },
+        /* 5.v-on的缩写测试示例 */
+        methods: {
+            numUp: function () {
+                this.num++
+            },
+            numSubtract: function () {
+                this.num--
+            }
+        }
+    })
+
+    /*
+    * 6.缩写
+    *   v-前缀作为一种视觉提示，用来识别模板中Vue的特定特性。
+    *     --对于一些频繁用到的指令来说，就会感觉到使用繁琐。
+    *     --同时在构建Vue.js管理所有模板的单页面应用程序时，v-前缀也变得没有那么重要了
+    *     因此：就特意的为两个最常用的指令提供了简写方式
+    *       v-bind:xx  ---- :xx
+    *       v-on:xx    ---- @xx
+    *
+    *
+    *   : 与 @ 对于特性名来说都是合法字符，在所有支持Vue.js的浏览器都能被正确地解析
+    *   最主要的时，他们不会出现在最终的渲染的标记中。所有页面上都看不见指令样式
+    * */
+</script>
+</body>
+</html>

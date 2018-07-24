@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app33">
+        <!-- 4.Vue版本2.1.0组合按键 Alt + C 触发事件，顺序没有关系（不推荐.67.alt这种写法） -->
+        <input @keyup.alt.67="clear('alt')">.alt+c
+        <br>
+        <br>
+        <input @keyup.ctrl.65="clear('ctrl')">.ctrl+a
+        <br>
+        <br>
+        <!-- 4.2.组合按键不精确的地方，可附带第三方按键（shift + space是附带 ctrl键时释放space也能触发事件） -->
+        <input @keyup.shift.32="clear('shift')">.shift+space
+        <br>
+        <br>
+        <!-- 4.1.meta键不配合其他的，但操作时需要配合其他一起按 -->
+        <input @keyup.meta="clear('meat任意键')">.meta+任意键
+        <br>
+        <br>
+        <!-- 5.点击配合按键组合Ctrl + Click -->
+        <div @click.ctrl="clear('click.ctrl')">按住ctrl点击左键click</div>
+        <br>
+        <br>
+        <!-- 5.1.点击配合其他键操作（文字键没有用，不按住也会被触发点击事件）。只有特殊的按键有效果。如系统修饰键 -->
+        <div @click.alt="clear('click.alt')">按住alt点击左键click（文字键（A,B,C等）没有用，不按住也会被触发点击事件）</div>
+        <br>
+        <br>
+        <!-- 6.单独触发ctrl或者alt等键 -->
+        <input @keyup.17="clear('keyup.17')">单独触发ctrl键</input>
+        <br>
+        <br>
+        <!-- ***** 7.精准的触发按键事件.exact修饰符2.5.0版本 -->
+        <!-- 7.1.即使 Alt 或 Shift 被一同按下时也会触发 -->
+        <button @click.ctrl="clear('click.ctrl.exact')">即使Alt或shift被一同按下时也触发事件【用作对比精准修饰符】</button>---分割线上面所有的都不是精准修饰符---
+        <br>
+        <br>
+        <!-- 7.2.有且只有 Ctrl 被按下的时候才触发 -->
+        <input @click.ctrl.exact="clear('click.ctrl.exact')">精准触发ctrl事件</input>
+        <br>
+        <br>
+        <!-- 7.3.没有任何系统修饰符被按下的时候才触发 -->
+        <button @click.exact="clear('click.exact')">没有任何系统修饰符被按下的时候触发【单纯的点击事件】空格键除外（space被当中按下键了）</button>
+        <br>
+        <br>
+        <!-- 8.鼠标按键修饰符 -->
+        <p @click.left="clear('click.left')">使用鼠标左键点击</p>
+        <p @click.right="clear('click.right')">使用鼠标右键点击</p>
+        <!-- 8.1.需要特定鼠标才可以用，不是滚轮，那个小按键 -->
+        <p @click.middle="clear('click.midell')">使用鼠标中间键点击</p>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app33',
+            methods: {
+                clear: function (str) {
+                    console.log(str)
+                }
+            }
+        })
+
+        /*
+        * 总结：系统修饰符
+        *   按下相应按键时才触发鼠标或键盘事件的监听事件，见 4
+        *     - .ctrl
+        *     - .alt
+        *     - .shift
+        *     - .meta Windows按键（ctrl与alt中间的四叶窗按键）见 4.1
+        *
+        *   注意：
+        *     - 修饰键与常规键不同，在和keyup事件一起使用时，事件触发时修饰键必须处于按下状态
+        *     - 如按下ctrl的情况下释放其他按键，才能触发keyup.ctrl 单独释放ctrl不会触发事件，见 5
+        *     - 如果需要单独释放ctrl也能触发这样的行为，请为 ctrl 换用 keyCode：keyup.17 （ctrl 对应编码 17）见 6
+        *     - 测试shift + space 组合按键时，附带加上其他按键，释放space按键也可以触发事件（这样不精确）。见 4.2
+        *
+        *     - 为了精确按键事件，推出了.exact修饰符。见 7
+        *
+        * 总结：.exact修饰符
+        *   精准修饰符 允许我们控制由精准的系统修饰符组合触发的事件（即只要不在设定范围内的修饰符按下都不能触发事件）见 7.2 -- 7.3
+        *
+        * 总结：鼠标按键修饰符 见 8
+        *   .left 鼠标左键
+        *   .right 鼠标右键
+        *   .middle 鼠标中间键
+        *
+        * 总结：为什么在HTML中监听事件？
+        *   - 能一样定位 HTML模板上对应的JavaScript代码中的方法
+        *   - 无需在JavaScript代码里手动绑定事件，我的ViewModel代码可以是非常纯粹的逻辑，和DOM完全解耦，更易于测试
+        *   - 当一个ViewModel被销毁时，所有事件处理器都会被删除。无需考虑清除他们。
+        * */
+    </script>
+</body>
+</html>

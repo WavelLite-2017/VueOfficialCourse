@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app11">
+        {{message}}
+    </div>
+    <script>
+        /* 3.创建一个实例，绑定Vue坑 */
+        const vm = new Vue({
+            /* 选项 */
+            el: '#app11',
+            data: {
+                message: '我就是打酱油的'
+            }
+        })
+        /*
+        * 4.每一个Vue应用都是从Vue函数创建一个实例开始的
+        * 5.vm是viewModel的缩写，这个变量名表示Vue的实例
+        * 6.当创建一个Vue实例时，我们可以传入一个选项对象。可以在API文档中浏览完整的选项列表
+        * 7.一个Vue应用因由一个通过new Vue创建的根Vue实例，以及可以 选择嵌套的、可复用的组件树组成。
+        * 8.todo应用的组件树
+        * 根实例
+        *   TodoList
+        *       TodoItem
+        *           DeleteTodoButton
+        *           EditTodoButton
+        *       TodoListFooter
+        *           ClearTodosButton
+        *           TodoListStatistics
+        * */
+    </script>
+</body>
+</html>

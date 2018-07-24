@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+    <!-- 4.引入axios请求工具库，一个请求库get、post等 -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <!-- 5.引入lodash工具库，它内部封装了诸多对 字符串、数组、对象 等常见数据类型的处理函数 -->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app19">
+        <p>Ask a yes/no question: <input v-model="question"> </p>
+        <p>{{answer}}</p>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm1 = new Vue({
+            el: '#app19',
+            data: {
+                question: '',
+                answer: 'I cannot give you an answer until you ask a question!'
+            },
+            /* question被侦听了，当值改变时调用 */
+            watch: {
+                /* 6.如果 question 发生改变，这个函数就会被运行 */
+                question: function (newQuestion, oldQuestion) {
+                    console.log(111111111111)
+                    console.log(newQuestion, 1)
+                    console.log(oldQuestion, 2)
+                    this.answer = 'Waiting for you to stop typing...'
+                    this.debouncedGetAnswer()
+                }
+            },
+            /* 实例创建后就执行，自执行 */
+            created: function () {
+                console.log(22222222222)
+                this.debouncedGetAnswer = _.debounce(this.getAnswer, 2000)
+            },
+            /* 实例创建后的方法，调用即执行 */
+            methods: {
+                getAnswer: function() {
+                    console.log(3333333333333)
+//                    if(this.question.indexOf('?') === -1){
+//                        this.answer = 'Questions usually contain a question mark.;-)'
+//                        return
+//                    }
+                    this.answer = 'Thinking...'
+                    console.log(this,09000)
+                    const vm = this
+                    axios.get('https:yesno.wtf/api').then(function (response) {
+                        console.log(vm,55)
+                        vm.answer = _.capitalize(response.data.answer)
+                    }).catch(function (error) {
+                        console.log(vm,58)
+                        vm.answer = 'Error! Could not reach the API. ' + error
+                    })
+                }
+            }
+        })
+
+        /*
+        *  见 5
+        *  `_.debounce` 是一个通过 Lodash 限制操作频率的函数。
+        *  在这个例子中，我们希望限制访问 yesno.wtf/api 的频率
+        *  AJAX 请求直到用户输入完毕才会发出。想要了解更多关于
+        *  `_.debounce` 函数 (及其近亲 `_.throttle`) 的知识， 请参考：https://lodash.com/docs#debounce
+        *
+        *  这示例中引入了其他工具库，所以我们需要了解常用配合Vue的工具库
+        * */
+    </script>
+</body>
+</html>

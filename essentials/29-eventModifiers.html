@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app31">
+        <!-- 4.阻止单击事件继续传播（暂时理解为不把事件扩散到其他节点上，如冒泡、捕获等） -->
+        <a v-on:click.stop="todo">.stop</a>
+
+        <!-- 5.提交事件不再重载页面（提交后不被跳转到新的界面上） -->
+        <form v-on:submit.prevent="todo">
+            <button>提交事件不再重载页面 .prevent</button>
+        </form>
+
+        <!-- 6.修饰符可以串联（可以两个同时使用，prevent是阻止默认事件不跳转的。同上5） -->
+        <a href="#" v-on:click.stop.prevent="todo">.stop.prevent</a>
+
+        <!-- 7.只有修饰符（没有绑定方法或者javaScript代码） -->
+        <form v-on:submit.prevent>
+            <button>只有修饰符 submit.prevent</button>
+        </form>
+        <a href="#" @click.stop.prevent>@click.stop.prevent</a>
+
+        <!-- 8.添加事件监听器时使用事件捕获模式，即元素自身触发的事件先在此处处理，然后才交由内部元素进行处理（先执行todo，再执行myItem） -->
+        <div v-on:click.capture="todo">
+            <a v-on:click="myItem">我只是来做陪衬的 .capture</a>
+        </div>
+
+        <hr>
+        <!-- 9.只当在event.target是当前元素自身时触发处理函数（即事件不是从内部元素触发的） -->
+        <!-- 9.1.也就是说触发todo只能是他直属内容才能被触发。myItem只能触发a标签内容的信息 -->
+        <div v-on:click.self="todo">
+            我是父级的内容，触发todo事件 -----------
+            <a v-on:click="myItem">我只是来做陪衬的，点击不被触发todo事件 .self</a>
+        </div>
+
+        <hr>
+        <!-- 10.修饰符的书写顺序（顺序不同结果不同，如.prevent.self || .self.prevent） -->
+        <!-- 10.1.针对自己下面的所有子集元素的点击默认事件被阻止，事件还是有的 -->
+        <div v-on:click.prevent.self="todo">
+            <a href="#"  v-on:click="myItem">.prevent.self</a>
+        </div>
+        <!-- 10.2.把自己的默认事件阻止掉，点击.self.prevent不跳转到 # ，而自己的却可以跳转 -->
+        <a href="#" v-on:click.self.prevent="todo">
+            .self.prevent》》》》》》
+            <a href="#"  v-on:click="myItem">点击后跳转到 #</a>
+        </a>
+
+        <hr>
+        <!-- 11.Vue2.1.4新增事件.once，只触发一次事件（一个生命周期中只触发一次事件） -->
+        <div v-on:click.once="todo">.once 只触发一次事件，之后点击没有效果</div>
+        <!-- 11.1.没有明白如何对组件进行事件的 -->
+        <todo-once v-bind:click.once="todo"></todo-once>
+
+        <!-- 12.Vue2.3.0新增监听滚动事件.passive -->
+        <!-- 滚动事件的默认行为 (即滚动行为) 将会立即触发 -->
+        <!-- 而不会等待 `onScroll` 完成  -->
+        <!-- 这其中包含 `event.preventDefault()` 的情况 -->
+        <div v-on:scroll.passive="onScroll" style="width: 60px; height: 100px; overflow: auto">我要滚动来触发.passive事件</div>
+    </div>
+    <script>
+        Vue.component('todo-once', {
+            template: `<p>我是组件，漂亮的组件</p>`
+        })
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app31',
+            data: {
+
+            },
+            methods: {
+                todo: function () {
+                    alert('我撒野不能做-1')
+                },
+                myItem: function () {
+                    alert('我的成员很多的-2')
+                },
+                onScroll: function () {
+                    console.log(1)
+                }
+            }
+        })
+        /*
+        * 总结：事件修饰符
+        *   .stop：阻止单击事件继续传播。见 4
+        *   .prevent 提交事件不再重载页面。见 5
+        *   .stop.prevent 修饰符可以串联。见 6
+        *   @submit.prevent 只有修饰符。见 7
+        *   .capture 添加事件监听器时使用事件捕获模式（默认为冒泡，设置后变为捕获）。见 8
+        *   .self 只触发自身的事件，其他事件不被触发。见 9
+        *
+        *   注意：使用修饰符的顺序很重要，不同的顺序会导致同样的代码给出不同的结果。如下，见 10
+        *     - v-on:click.prevent.self 会阻止所有的点击默认事件
+        *     - v-on:click.self.prevent 只会阻止对元素自身的点击默认事件
+        *
+        *   .once 在什么周期中只触发一次事件，见 11
+        *     - 且可以用到自定义组件上。见 11.1
+        *
+        *   .passive 滚动修饰符，将提升移动端的性能。见 12
+        *
+        *   注意：不要把.passive 和 .prevent 一起使用。一起使用的话.prevent会被忽略，而且浏览器可能会报警告。 .passive不想阻止默认事件
+        * */
+    </script>
+</body>
+</html>

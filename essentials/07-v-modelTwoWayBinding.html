@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+    <!-- 4.对页面的样式进行处理 -->
+    <style>
+        span {
+            border: 1px solid #000;
+            padding: 20px;
+            display: block;
+            width: 50%;
+            margin: 50px auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- 2.实现数据双向绑定，v-model实现双向绑定是通过ES6的defineProperty实现的 -->
+    <div id="app7">
+        <span>
+            <p>{{message}}</p>
+            <input type="text" v-model="message">
+        </span>
+    </div>
+    <script>
+        /* 3.绑定坑且定义数据 */
+        new Vue({
+            el: '#app7',
+            data: {
+                message: 'hello wavellite!'
+            }
+        })
+    </script>
+</body>
+</html>

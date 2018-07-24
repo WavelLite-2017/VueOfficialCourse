@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+    <style>
+        .errorInfo {
+            width: 600px;
+            height: 40px;
+            border: 2px solid rgba(243, 190, 184, 1);
+            background-color: rgba(243, 190, 184, 0.7);
+            padding: 0 0 0 10px;
+            line-height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app42">
+        <!-- 5.通过插槽分发把组件中的文字发送到组件中，并通过slot渲染出来 -->
+        <alert-box>
+            我要把这里的字显示在页面上
+            <br>
+            <br>
+            <alert-box>222</alert-box>
+        </alert-box>
+        <br>
+    </div>
+    <script>
+        /* 4.注册全局组件 */
+        Vue.component('alert-box', {
+            template: `
+                <div class="errorInfo">
+                    <strong>Error!</strong>
+                    <slot></slot>
+                </div>
+            `
+        })
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app42'
+        });
+
+        /*
+        * 总结：通过插槽分发内容
+        *   场景：我们想在外部发送信息到内部里面去，除了通过prop的形式外，还可以通过slot来做，在组件中间放文字内容并渲染在页面上
+        *
+        *   通过slot元素把组件元素之间的文字信息发送到组件中并进行渲染。见 5
+        * */
+    </script>
+</body>
+</html>

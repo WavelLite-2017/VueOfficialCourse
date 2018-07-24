@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <div id="app01">
+        <!-- 1.1.正常使用组件名即可 -->
+        <my-first-course></my-first-course>
+        <!-- 2.1.必须转换为kebab-case的方式写组件名 -->
+        <your-name-is-x></your-name-is-x>
+    </div>
+    <script>
+        /* 1.注册一个组件，第一个参数为组件名 kebab-case命名法 */
+        Vue.component('my-first-course', {
+            template: `
+                <div>
+                    我們今天去吃火鍋！
+                </div>
+            `
+        });
+        /* 2.注册一个驼峰式命名法的组件 */
+        Vue.component('YourNameIsX', {
+            template: `
+                <div>
+                    好呀，我们一起去吃吧！
+                </div>
+            `
+        })
+        new Vue({
+            el: '#app01'
+        });
+
+        /*
+        * 总结：组件名
+        *   在注册一个组件时，我们需要给他定义一个名字。
+        *   Vue.component()的第一个参数就是我们注册的组件名。见 1
+        *   我们强烈推荐遵循W3C规范中的自定义组件名（字母全部小写，必须包含一个连字符）
+        *
+        * 总结：组件名大小写
+        *   我们有两种方式定义组件名，都是可以的
+        *   - 使用 kebab-case（短横线隔开）如 my-first-course。见 1
+        *   - 使用 PascalCase（驼峰式大小写） 如 YourNameIsX
+        *
+        *   - 但是在调用组件的时候，在DOM中必须使用kebab-case的方式才有效。见 2.1
+        *
+        * */
+    </script>
+</body>
+</html>

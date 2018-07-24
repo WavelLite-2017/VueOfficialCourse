@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app27">
+        <!-- 4.原始数据展示 -->
+        <p v-for="item in myObj">{{item}}</p>
+
+        <!-- 7.1.数据展示 -->
+        <ul>
+            <li>以下为计算属性（computed） 数据展示，对数据进行了过滤操作</li>
+            <li v-for="item in evenMyArr">{{item}}</li>
+        </ul>
+        <ul>
+            <li>以下为方法属性（methods） 数据展示，对数据进行了过滤操作</li>
+            <li v-for="item in even(myArr)">{{item}}</li>
+        </ul>
+        <!-- 8.取值范围的数据展示 -->
+        <ul>
+            <li>以下为一段取值范围（取值范围结果必须为正整数）的数据展示，没有原始数据在data中，直接定义的取值范围10，取值时取整</li>
+            <li v-for="item in 20.9-1.9">{{item}}</li>
+        </ul>
+    </div>
+    <script>
+        const vm = new Vue({
+            /* 3.创建一个Vue实例，绑定一个坑 */
+            el: '#app27',
+            data: {
+                myObj: {
+                    a: 1,
+                    b: 2,
+                    c: 3,
+                    d: 4
+                },
+                /* 7.过滤数据或排序结果的原始数据 */
+                myArr: [31, 23, 12, 21, 34, 13, 53]
+            },
+            computed: {
+                evenMyArr: function () {
+                    return this.myArr.filter(function (val) {
+                        console.log(val,1)
+                        return val % 2 === 0
+                    })
+                }
+            },
+            /* 7.2.methods方法也可以进行数据处理 */
+            methods: {
+                even: function (myArr) {
+                    console.log(myArr, 2)
+                    return myArr.filter(function (val) {
+                        return val % 2 === 1
+                    })
+                }
+            }
+        });
+        /* 4.给对象添加未知的属性和值，无法重现渲染页面 */
+        setTimeout(function () {
+            vm.myObj.e = 'SAr';
+            console.log(vm.myObj)
+        }, 2000);
+
+        /* 5.给对象添加未知的属性和值，无法重现渲染页面 */
+        setTimeout(function () {
+            /* 5.1.通过Vue.set() 或者 他的别名 vm.$set()来添加数据并重新渲染页面 */
+            vm.$set(vm.myObj, 'f', 'wavellite')
+            console.log(vm.myObj)
+
+        }, 4000);
+
+        /* 6.该方法直接把元素添加到对象里面去了，根本没有进行重新渲染页面，所以不能这么用 */
+        setTimeout(function () {
+            /* 不推荐使用这种方法，页面不会被重新渲染 */
+            Object.assign(vm.myObj, {
+                age: 27,
+                favoriteColor: 'Vue Green'
+            })
+            console.log(vm.myObj)
+        }, 6000)
+
+        /* 6.1.通过一个新对象接收原有的值和添加的值，推荐使用 */
+        setTimeout(function () {
+            vm.myObj = Object.assign({}, vm.myObj, {
+                x: 16,
+                y: 18,
+                z: '00'
+            })
+            console.log(vm.myObj)
+        }, 8000)
+
+
+
+
+        /*
+        * 总结：对象更改检测注意事项
+        *   由于JavaScript的限制，Vue不能检测对象属性的添加或删除。（对于通过普通方式添加进去的属性和值无法进行页面渲染）见 4
+        *
+        *   对于已经创建的实例，Vue不能动态添加根级别的响应式属性。但是可以用 Vue.set(Object, key, value)方法向嵌套对象添加响应式属性。见 5
+        *
+        *   有时你可能需要为已有对象赋予多个（很多）的新属性，可以用 Object.assign() 或 _.extend()(这里指的是JQ中的extend方法，用法跟assign一样)。
+        *   在这种情况下，你应该用两个对象的属性创建一个新的对象。所以，如果你想添加新的响应式属性，见 6
+        *
+        * 总结：显示过滤/排序结果
+        *   有时候我们需要的时数组的过滤或者副本，就是说不对原始数据进行修改的情况。
+        *   这种情况下我们可以通过过滤数（filter）据或者排序数组的计算属性（computed）。见 7
+        *   在计算属性不适用的情况下，还可以选择method方法。见 7.2
+        *
+        * 总结：一段取值范围的v-for
+        *   v-for可以直接对值进行循环，对数据进行取整操作。见 8
+        * */
+    </script>
+</body>
+</html>

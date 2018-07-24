@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app37">
+        <!-- 4.组件，把他当着自定义元素来使用 -->
+        <button-counter></button-counter>
+    </div>
+    <script>
+        /* 全局组件，button-counter组件名，坑里面调用就用这个名称。｛...｝这里面是组件内容。 */
+        Vue.component('button-counter', {
+            /* 5.2.这里通过 `` ES6语法特性，模板字符串 */
+            template: `<div>
+                           <button v-on:click="count++">你打算猛踹我记次 {{count}} Times</button>
+                           <button v-on:click="countFoo">你打算猛踹我记次 {{countFooNum}} Times</button>
+                       </div>`,
+            /* 5.1.这里的data是一个函数，return出来数据，跟new Vue是有区别的 */
+            data: function () {
+                return {
+                    /* 这里是初始值，用法跟new Vue一样 */
+                    count: 0,
+                    countFooNum: 0
+                }
+            },
+            /* 5.这里的方法跟Vue实例一样，除data的格式不同，其他的都一样的使用 */
+            methods: {
+                countFoo: function () {
+                    return this.countFooNum++
+                } 
+            }
+        })
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+             /* 5.3.这里绑定页面上的坑，通过页面上调用组件名而调用组件 */
+            el: '#app37'
+        })
+        /*
+        * 总结：基本示例：
+        *   Vue.component('xxx'，｛...｝)  全局组件基本格式
+        *   xxx 组件名称
+        *   ｛...｝ 组件内容，里面可以包含methods data computed watch 以及生命周期钩子函数等，仅有的例外像el这样根实例特有特有选项。见 5
+        *
+        *   组件是可以复用的Vue实例，且带有一个名字，我们通过new Vue 创建的Vue根实例中，把这个组件作为自定义元素来使用。见 4
+        * */
+    </script>
+</body>
+</html>

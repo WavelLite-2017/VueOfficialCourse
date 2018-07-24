@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- 5.对页面的样式进行处理 -->
+    <style>
+        span {
+            border: 1px solid #000;
+            padding: 20px;
+            display: block;
+            width: 50%;
+            margin: 50px auto;
+        }
+    </style>
+</head>
+<body>
+<!-- 2.建立对应的坑，通过v-for来循环data里面的列表数据 todo为todos中单条的信息（todos[0]） -->
+<div id="app5">
+    <span v-for="todo in todos">{{todo.text}}</span>
+</div>
+<script>
+    /* 3.通过v-for循环把todos绑定到页面上的span中去，需要注意唯一性，后期说明 */
+    var app5 = new Vue({
+        el: '#app5',
+        data: {
+            todos: [{
+                text: '学习javascript'
+            },{
+                text: '学习vue'
+            },{
+                text: '学习html'
+            }]
+        }
+    })
+    /* 4.设置定时器往数据中添加新数据，从而更新页面显示 */
+    setTimeout(function () {
+        app5.todos.push({
+            text: '学习css'
+        })
+    },1000)
+</script>
+</body>
+</html>

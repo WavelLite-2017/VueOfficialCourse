@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app15">
+        <!-- 4.指令，带有 v-前缀的特殊特性。这里通过 v-if 指令，将表达式 seen的值的真假来显示/隐藏 p 元素 -->
+        <p v-if="seen">{{seen}}</p>
+        <p v-if="!seen">{{seen}}</p>
+        <!-- 6.修饰符示例 -->
+        <!-- .prevent 阻止表单提交并刷新当前页面的默认行为 -->
+        <form v-on:submit.prevent = 'onSubmit'>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app15',
+            data: {
+                seen: true
+            },
+            methods: {
+                onSubmit: function () {
+                    console.log("form submit!");
+                }
+            }
+        })
+
+        /*
+        * 5.指令是带有v-前缀的特殊特性
+        *   指令特性： 是的值预期是单个 JavaScript 表达式（v-for除外，操作多个值）
+        *   指令职责： 是当表达式的值改变时，将其产生的连带影响，响应地作用于DOM
+        * */
+
+        /*
+        * 6.修饰符
+        *   就是针对某些特殊行为的一些操作，如阻止表单提交并刷新当前页面的默认行为的.prevent
+        *
+        *   是以半角句号 . 指明的特殊后缀
+        *   用于指出一个指令应该以特殊方式绑定
+        *   如 .prevent 修饰符告诉 v-on 指令对于触发的事件调用 event.preventDefault() =》 阻止表单提交并刷新当前页面的默认行为
+        * */
+    </script>
+</body>
+</html>

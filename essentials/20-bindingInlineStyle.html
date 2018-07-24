@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app22">
+        <p>{{message}}</p>
+        <!-- 4.绑定内联样式，跟css比较像，遵循驼峰命名法 -->
+        <p v-bind:style="{ color: activeColorMy, fontSize: fontSizeMy+'px' }">{{message}}</p>
+        <!-- 5.1.绑定内联样式，直接绑定一个对象，这样思路更清晰 -->
+        <p v-bind:style="styleObject">{{message}}</p>
+        <!-- 6.1.绑定内联样式，同时多个样式在元素上 -->
+        <p v-bind:style="[bacStyle, fontStyle]">{{message}}</p>
+        <!-- 7.多重值 -->
+        <p v-bind:style="dispalyStyle">{{message}}</p>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app22',
+            data: {
+                message: '绑定内联样式',
+                /* 4.1.内联样式值 */
+                activeColorMy: 'red',
+                fontSizeMy: 30,
+                /* 5.绑定样式对象 */
+                styleObject: {
+                    color: 'blue',
+                    fontSize: '24px',
+                    border: '1px solid #000'
+                },
+                /* 6.同时绑定多个样式对象 */
+                bacStyle: {
+                    background: '#ccc'
+                },
+                fontStyle: {
+                    'font-size': '30px',
+                    color: 'red'
+                },
+                /* 7.多重值，带多个前缀的值 */
+                dispalyStyle: {
+                    display: ['-webkit-box', '-ms-flexbox', 'flex']
+                }
+            }
+        })
+
+        /*
+        * 总结：内联对象语法 v-bind:style={...}
+        *    CSS属性名可以用驼峰式（camelCase）或短横线分割（kebab-case，记得用单引号括起来）来命名，见4
+        *    可用内联样式（不推荐）或绑定一个样式对象（相对前者思路更清晰，更复用），见5
+        *
+        *
+        * 总结：内联数组语法 v-bind:style=[...]
+        *    同一个元素上可以同时放多个样式对象
+        *
+        * 总结：内联自动添加前缀
+        *    在需要添加前缀的浏览器引擎前缀时，会自动添加前缀，比如transform
+        *
+        * 总结：多重值（提供可以包含多个值的数组，常用于提供多个带前缀的值）
+        *    <div :style="{ display: ['-webkit-box', '-ms-flexbox', 'flex'] }"></div>
+        * */
+    </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <div id="app10">
+        <!-- 4.通过自定义标签把组件中template中的内容添加进去 -->
+        <todo-item v-bind:todo="todoList"></todo-item>
+    </div>
+
+    <!-- 以下是组件后续的使用情况 -->
+    <!--
+    <div id="app11">
+        <app-nav></app-nav>
+        <app-banner></app-banner>
+        <app-view>
+            <app-sidebar></app-sidebar>
+            <app-content></app-content>
+        </app-view>
+    </div>
+    -->
+<script>
+
+    /* 3.编写一个全局组件，通过props接受自定义标签通过v-bind:todo传递过来的数据，再在template中渲染数据 */
+    Vue.component('todo-item',{
+        props: ['todo'],
+        template: '<ul><li v-for="oneTodo in todo">{{oneTodo.text}}</li></ul>'
+    });
+
+    /* 2.通过el必须绑定的坑 */
+    new Vue({
+        el: '#app10',
+        data: {
+            todoList: [{
+                id: 0,
+                text: '西瓜'
+            },{
+                id: 1,
+                text: '木瓜'
+            },{
+                id: 2,
+                text: '香瓜'
+            },{
+                id: 3,
+                text: '甜瓜'
+            }]
+        }
+
+    });
+
+
+</script>
+</body>
+</html>

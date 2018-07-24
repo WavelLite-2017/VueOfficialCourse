@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app18">
+        {{fullName}}
+        <p>{{myText}}</p>
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app18',
+            data: {
+                firstName: 'Foo',
+                lastName: 'Bar',
+                fullName: 'Foo Bar',
+                myName: 'Wavellite',
+                myTime: '2017'
+            },
+            /* 4.侦听属性 */
+            watch: {
+                /*
+                * 4.1.侦听介绍：
+                *   firstName / lastName：侦听信息名称，data里面的键必须对应这里的函数名，不然不能侦听到指定的信息
+                *   val:侦听信息被改变后的值。这里的值对应为，2秒后firstName对应的val为 ‘BABA’  4秒后lastName对应的val为 ‘PPPP’
+                *   old:侦听信息被改变后，这里的值对应上一个值，如 2秒后 firstName对应的old为 ‘Foo’  4秒后lastName对应的val为 ‘Bar’
+                * */
+                firstName: function (val, old) {
+                    console.log(val, old, 1)
+                    this.fullName = val + ' ' + this.lastName
+                },
+                lastName: function (val, old) {
+                    console.log(val, old, 2)
+                    this.fullName = this.firstName + ' ' + val
+                }
+            },
+            /* 5.计算属性的侦听效果（缓存机制），当依赖的值改变，就能起到侦听效果，比起监听每一个数据要方便得多 */
+            computed: {
+                /* 这是getter默认出现的格式 */
+                /*myText: function () {
+                    console.log(Date.now())
+                    return this.myName + this.myTime;
+                },*/
+                /*
+                * 6. 计算属性 setter
+                * 这是getter 和 setter 都需要设置的时候的格式
+                * get：在依赖被改变时所触发的 getter
+                * set：在myText自身重新赋值时所触发的 setter
+                * newValue： 为重新给myText赋值时的值
+                * */
+                myText: {
+                    get: function () {
+                        console.log(Date.now())
+                        return this.myName + this.myTime;
+                    },
+                    set: function (newValue) {
+                        console.log(newValue)
+                        var names = newValue.split(' ')
+                        this.myName = 1
+                        this.myTime = 2
+                    }
+                }
+            }
+        })
+        /* 4.2.用于测试侦听属性 */
+        setTimeout(function () {
+            /* 4.3.改变侦听对象值 */
+            vm.firstName = 'BABA'
+            /* 5.1.改变计算属性得依赖 */
+            vm.myName = 'SAr'
+        },2000)
+        setTimeout(function () {
+            /* 4.4.改变侦听对象值 */
+            vm.lastName = 'PPPP'
+            /* 5.2.改变计算属性得依赖 */
+            vm.myTime = '0921'
+        },4000)
+        /* 6.1.用于计算属性setter测试（测试需要把computed里面的myText进行切换） */
+        setTimeout(function () {
+            /* 6.2.改变侦听对象值 */
+            vm.myText = 'abc'
+        },6000)
+
+        /*
+        * 总结：计算属性侦听效果  见 5
+        *    计算属性的侦听效果与侦听属性 watch 里函数的最后结果是相同的。
+        *    而侦听属性是基于依赖来进行侦听的（缓存机制），当依赖值改变时，那么侦听就会被触发，反之则不触发。
+        *
+        * 总结：侦听属性 watch
+        *    参数，名称的使用方法，见 4
+        *    val 改变时传入的改变值
+        *    firstName  对应data里面的名称
+        *
+        * 总结：计算属性setter  见 6
+        *    当重新对computed里面的函数进行赋值时，改setter就会被触发
+        * */
+    </script>
+</body>
+</html>

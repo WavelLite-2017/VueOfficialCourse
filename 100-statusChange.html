@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./lib/vue.js"></script>
+    <style>
+        .showOne{
+            display: block;
+        }
+        .noneTwo{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app01">
+    <template v-for="(item,index) in lanmu">
+        <div @click="foo(item.id)">
+            <h5>{{item.name}}</h5>
+            <ul :class="arr.indexOf(item.id)==-1?'noneTwo':'showOne'">
+                <li v-for="twoItem in item.twoji">{{twoItem.lan1}}</li>
+            </ul>
+        </div>
+
+    </template>
+</div>
+<script>
+
+    const vm = new Vue({
+        el: '#app01',
+        data: {
+            lanmu: {
+                onelanmu: {
+                    id: 1,
+                    name: '一级栏目A',
+                    twoji: [{
+                        twoId: 1,
+                        lan1: '二级栏目A1',
+                    },{
+                        twoId: 2,
+                        lan1: '二级栏目A2',
+                    },{
+                        twoId: 3,
+                        lan1: '二级栏目A3',
+                    }]
+                },
+                twolanmu: {
+                    id: 2,
+                    name: '一级栏目B',
+                    twoji: [{
+                        twoId: 1,
+                        lan1: '二级栏目B1',
+                    },{
+                        twoId: 2,
+                        lan1: '二级栏目B2',
+                    },{
+                        twoId: 3,
+                        lan1: '二级栏目B3',
+                    }]
+                },
+                threelanmu: {
+                    id: 3,
+                    name: '一级栏目C',
+                    twoji: [{
+                        twoId: 1,
+                        lan1: '二级栏目C1',
+                    },{
+                        twoId: 2,
+                        lan1: '二级栏目C2',
+                    },{
+                        twoId: 3,
+                        lan1: '二级栏目C3',
+                    }]
+                },
+                fourlanmu: {
+                    id: 4,
+                    name: '一级栏目D',
+                    twoji: [{
+                        twoId: 1,
+                        lan1: '二级栏目D1',
+                    },{
+                        twoId: 2,
+                        lan1: '二级栏目D2',
+                    },{
+                        twoId: 3,
+                        lan1: '二级栏目D3',
+                    }]
+                }
+            },
+            arr: []
+        },
+        methods: {
+            foo: function (index) {
+                if(this.arr.length<4 && this.arr.indexOf(index)==-1){
+                    this.arr.push(index)
+                }
+                if(this.arr.length==4){
+                    this.arr.shift()
+                }
+            }
+        }
+    });
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app32">
+        <!-- 4.通过keyup.xx来触发事件（按键事件） -->
+        <input v-on:keyup.13="submit">13
+        <!-- 4.1.Vue提供了别名来进行按键触发，比如 .enter 对应 13 -->
+        <input v-on:keyup.enter="submit">enter
+        <!-- 4.2.Vue对应keyCode的别名表 -->
+        <ul>
+            <li v-for="item in VueKeyCodeName">{{item.name}}</li>
+        </ul>
+        <!-- 4.3.Vue提供了自定义别名的情况，比如 .f1 对应 112 -->
+        <input v-on:keyup.f1="keyF1Submit">f1自定义按键别名
+
+        <!-- 5.自动匹配按键修饰符（对应键盘的名称，Vue会自动转换为对应的按键修饰符） -->
+        <input @keyup.page-down="onPageDown">自动匹配按键修饰符
+    </div>
+    <script>
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app32',
+            data: {
+                VueKeyCodeName: [{
+                    id: 1,
+                    name: '.enter'
+                }, {
+                    id: 2,
+                    name: '.tab'
+                }, {
+                    id: 3,
+                    name: '.delete(捕获删除或退格键)'
+                }, {
+                    id: 4,
+                    name: '.esc'
+                }, {
+                    id: 5,
+                    name: '.space'
+                }, {
+                    id: 6,
+                    name: '.up'
+                }, {
+                    id: 7,
+                    name: '.down'
+                }, {
+                    id: 8,
+                    name: '.left'
+                }, {
+                    id: 9,
+                    name: '.right'
+                }, {
+                    id: 10,
+                    name: '通过全局config.keyCodes对象自定义按键修饰符别名'
+                }]
+            },
+            methods: {
+                submit: function () {
+                    alert('Enter')
+                },
+                keyF1Submit: function () {
+                    console.log(Vue.config.keyCodes.f1)
+                },
+                onPageDown: function () {
+                    alert('onPageDown')
+                }
+            }
+        });
+
+        Vue.config.keyCodes.f1 = 112
+
+        /*
+        * 总结：按键修饰符
+        *   Vue自带按键修饰符别名，只有少数部分常用的。见 4.1
+        *   Vue提供了可以自定义修饰符别名的方式  Vue.config.keyCodes.f1 = 112。见 4.3
+        *   可以直接绑定按键对应的编号进行触发事件。见 4
+        *
+        * 总结：自动匹配按键修饰符
+        *   Vue把暴露的任意有效的按键名转换为kebab-case来做为修饰符。
+        *   在实例中（见 5）onPageDown的按键触发为 pageDown函数
+        *
+        *   注意：一些按键（如.ecs以及所有的方向键）在IE9中有不同的key值，如果想支持IE9，可以使用内置别名且首选内置别名
+        * */
+    </script>
+</body>
+</html>

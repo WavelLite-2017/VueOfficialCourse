@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <div id="app8">
+        <!-- 4.通过自定义标签把组件中template中的内容添加进去 -->
+        <todo-item></todo-item>
+    </div>
+    <div id="app9">
+        <!-- 6.再次调用全局组件 -->
+        <todo-item></todo-item>
+    </div>
+    <script>
+
+        /* 3.绑定后通过Vue.component定义全局组件，全局定义的组件必须在实例的前面。不然会报错 */
+        Vue.component('todo-item',{
+            template: '<ul><li>全局定义的组件</li><li>全局定义的组件</li></ul>'
+        });
+
+        /* 2.通过el必须绑定的坑 */
+        new Vue({
+            el: '#app8'
+        });
+        /* 5.再次通过el必须绑定的坑 */
+        new Vue({
+            el: '#app9'
+        });
+
+
+    </script>
+</body>
+</html>

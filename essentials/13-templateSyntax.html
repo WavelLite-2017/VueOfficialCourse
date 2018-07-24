@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app14">
+        <!-- 3.插值表达式，Mustache语法（胡子语法即指大括号） -->
+        <p>Mustache语法：{{message}}</p>
+        <!-- 4.执行一次性地插值，当数据改变时，插值的内容不会被更新。但注意会影响该节点上的其他数据绑定 -->
+        <span v-once>{{msg}}</span>
+
+        <!-- 5.直接把标签当作字符串读取了 -->
+        <p>{{rawHtml}}</p>
+        <!-- 6.v-html 可以对数据里面的标签对象解析了，111 也直接被干掉 -->
+        <p>Using v-html directive: <span v-html="rawHtml">111</span></p>
+        <!-- 7.绑定信息，可以通过v-bind把信息传递给子组件见 09-takeInPorps.html -->
+        <!-- 这里把data 中的 rawHtml直接显示在标签中 -->
+        <p>Using v-html directive: <span v-bind:textCode="rawHtml">111</span></p>
+        <!-- 7.1.绑定的 myXinxi 如果右边值是false null undefined 则不会被渲染出来 -->
+        <button :myXinxi="bindID">按钮</button>
+        <!-- 8.数据绑定，使用javascript表达式 -->
+        <p>{{ num+18 }}</p>
+        <p>{{ num == 1618? 'yes' : 'no' }}</p>
+        <p>{{ message.split('').reverse().join('') }}</p>
+        <!-- 8.1.这些不会被显示，而且会被报错。说明模板表达式对应的数据都需要放在沙盒中才能生效，否则会被报错 -->
+        <!--<p>{{ var a = 1 }}</p>-->
+        <!--<p>{{ if (num) { return message } }}</p>-->
+    </div>
+    <script>
+        const vm = new Vue({
+            /* 选项 */
+            el: '#app14',
+            /* 该对象加入了一个Vue实例中 */
+            data: {
+                /* 用于测试Mustache语法，见 3 */
+                message: '模板语法（胡子语法，大括号），另外可通过jsx语法来渲染',
+                /* 用于渲染一次性数据，见 4 */
+                msg: 'v-once 绑定一次性数据，即不能进行更新',
+                /* 用于显示标签 见 6 */
+                rawHtml: '<span style="color:red">This should be red.</span>',
+                /* 用于测试 v-bind，见 7 */
+                bindID: false,
+                num: 1600
+            }
+        })
+        /* 4.测试v-once指令 */
+        setTimeout(function () {
+            vm.message = '我没有绑定 v-once，可以被改变';
+            vm.msg = '我要改变，却发现不行'
+        },2000)
+
+        /*
+        * 总结：
+        *   v-once 指令，一次性绑定数据，后面不能更新该数据。可能影响到该节点的其他数据
+        *   Mustache语法（插值表达式，胡子语法）。插值表达式不要对用户进行开放，容易引起xss攻击。
+        *       - 如input标签获取来数据后直接插值表达式渲染页面
+        *   v-html 指令，可以把带有标签的字符串渲染到页面中
+        * */
+
+        /*
+        * 7.特性，见上面的5.xxx
+        *   v-bind:abc="isTrue"
+        *   v-bind: => 可简写为 : ， 如 :abc="isTrue" ， 见 7.1
+        *   isTrue => 当这个值为 false null undefined时，数据不会显示在页面中
+        * */
+
+        /*
+        * 8.使用javaScript表达式，
+        *   对于所有的数据绑定，Vue提供了完全支持的 JavaScript 表达式，会在所属的Vue实例的数据作用域下作为JavaScript被解析
+        *     {{ number + 1 }}
+        *     {{ ok ? 'YES' : 'NO' }}
+        *     {{ message.split('').reverse().join('') }}
+        *     <div v-bind:id="'list-' + id"></div>
+        *
+        *   PS：不过这些表达式是有限制的，每个绑定都只能是单个表达式，所以下面的例子不会被生效
+        *     <!-- 这是语句，不是表达式 -->
+        *     {{ var a = 1 }}
+        *
+        *     <!-- 流控制也不会生效，请使用三元表达式 -->
+        *     {{ if (ok) { return message } }}
+        *
+        *   沙盒：可理解为一个盒子中的白名单，而模板表达式中的数据都是被放在这白名单（沙盒）中。
+        *   如 Math 和 Data 。其他地方是不能被访问的，如自定义的全局变量
+        * */
+    </script>
+</body>
+</html>

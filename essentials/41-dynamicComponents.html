@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<!-- 2.创建一个坑 -->
+<div id="app43">
+    <!-- 5.4.再通过点击事件，把组件名更改，并切换页面 -->
+    <button v-for="tabItem in tab" @click="tabIndexName=tabItem">{{tabItem}}</button>
+    <!-- 5.通过 v-bind:is 指令 来绑定组件名，进行切换组件内容 -->
+    <component :is="changeTab"></component>
+    <hr>
+    <hr>
+    <hr>
+    <!-- 6.1.一个组件选项对象的方式 -->
+    <button v-for="tabItem in tab1" @click="tabIndexName1=tabItem">{{tabItem}}</button>
+    <component :is="tabIndexName1"></component>
+
+    <!-- 7.这里table和组件是被分离了的。查看浏览器F12 -->
+    <!--
+        <div>动态组件1</div>
+        <table></table>
+    -->
+    <table>
+        <dynamic-group-one></dynamic-group-one>
+    </table>
+    <!-- 7.1.这样就不被分离 -->
+    <!--
+        <table>
+            <tbody>
+                <div>动态组件1</div>
+            </tbody>
+        </table>
+    -->
+    <table>
+        <tr is="dynamic-group-one"></tr>
+    </table>
+</div>
+<script>
+    /* 4.注册全局组件 */
+    Vue.component('dynamic-group-one', {
+        template: `
+                <div>
+                    动态组件1
+                </div>
+            `
+    })
+    Vue.component('dynamic-group-two', {
+        template: `
+                <div>
+                    动态组件2
+                </div>
+            `
+    })
+    Vue.component('dynamic-group-three', {
+        template: `
+                <div>
+                    动态组件3
+                </div>
+            `
+    })
+    /* 3.创建一个Vue实例，绑定一个坑 */
+    const vm = new Vue({
+        el: '#app43',
+        data: {
+            /* 5.1.初始化导航名，跟组件名有关联 */
+            tab: ['one', 'two', 'three'],
+            /* 6.一个组件选项对象 */
+            tab1: ['dynamic-group-one', 'dynamic-group-two', 'dynamic-group-three'],
+            tabIndexName1: 'dynamic-group-three',
+            /* 5.2.定义第一个显示的组件的部分名字 */
+            tabIndexName: 'one'
+        },
+        /* 5.3.通过计算属性 把定义的初始名拼接为组件名。 */
+        computed: {
+            changeTab: function () {
+                return 'dynamic-group-' + this.tabIndexName
+            }
+        }
+    });
+
+    /*
+    * 总结：动态组件
+    *   必备元素：component 标签，用于给组件绑定用的，表明这是一个组件盒子
+    *           v-bind:is='xxx' 指令，绑定组件名字。再结合定义名字xxx来显示该组件
+    *           @click 事件，用于切换组件名
+    *           computed 计算属性，用于计算每次点击后的结果并返回到页面中的is处，从而更改组件，切换内容
+    *
+    *   在上述示例中，changeTab 可以包括
+    *     - 已注册组件的名字，或者，见 5.1
+    *     - 一个组件的选项对象，见 6
+    *
+    * 总结：解析 DOM 模板时的注意事项
+    *   有些HTML元素中，不能出现自定义组件：如
+    *     - <ul>, <ol>, <table>, <select> 在这些下面不能出现自定义组件，见 7
+    *       <table>
+    *           // 这里不能出现自定义组件名
+    *           <blog-post-row></blog-post-row>
+    *       </table>
+    *
+    *     - 这个自定义组件会被作为无效的内容提升到外部，并导致最终渲染结果出错。解决方案如下：见 7.1
+    *       <table>
+    *           // 通过is来绑定组件名
+    *           <tr :is='blog-post-row'></tr>
+    *       </table>
+    *
+    *   需要注意的是，如果我们从以下来源使用模板的话，这条限制是不存在的
+    *     - 字符串，如 template: '...' 暂时不明白
+    *     - 单文件组件，如 .vue文件
+    *     - <script type="text/x-template"> 暂时不明白
+    * */
+</script>
+</body>
+</html>

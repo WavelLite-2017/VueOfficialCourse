@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+<!-- 2.建立对应的坑 -->
+<div id="app2">
+    <p>{{message}}</p>
+</div>
+<script>
+    /* 3.通过声明式渲染到页面中 */
+    const app2 = new Vue({
+        el: '#app2',
+        data: {
+            message: 'Hello word!'
+        }
+    })
+    /* 4.可通过变量进行修改data里面的数据 */
+    app2.message = 'Hello Vue.js'
+</script>
+</body>
+</html>

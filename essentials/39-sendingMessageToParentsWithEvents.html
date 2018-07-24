@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app41">
+        <!-- 5.注册一个enlarge_text（事件名称）的事件，以供$emit()使用 -->
+        <!-- 5.2.v-bind:style 绑定内联样式 对象语法 -->
+        <div :style="{fontSize: postFontSize + 'em'}">
+            <!-- 5.4.触发事件，传递一个参数 -->
+            <blog-post :post_info="post" @enlarge_text="postFontSize+=0.01"></blog-post>
+            <!-- 6.触发事件，传递两个参数，注册时事件可为方法 -->
+            <p style="background-color: #ccc;padding: 20px;">以下为$event参数方式（第二个参数）</p>
+            <!--<blog-post :post_info="post" @enlarge_text="postFontSize += $event"></blog-post>-->
+            <blog-post :post_info="post" @enlarge_text="postFontSizeFoo"></blog-post>
+        </div>
+        <br>
+        <br>
+        <br>
+        <p>在组件上使用v-model</p>
+        <!-- 7.1.以事件传递方式更新input值，实现内外双向绑定 -->
+        <!--<custom-input :value1="searchText" @input="searchText = $event"></custom-input>-->
+        <!-- 7.3.下面的方式完全等同于上面的方式 -->
+        <custom-input v-model="searchText"></custom-input>
+        <p>外面的data数据打印：{{searchText}}</p>
+        <hr>
+        <hr>
+        <!-- 7.4.两种情况是相同的效果 -->
+        <input type="text" v-model="messageTwo">v-model
+        <input type="text" :value="messageTwo" @input="messageTwo=$event.target.value">:value&@input
+        <p>{{messageTwo}}</p>
+    </div>
+    <script>
+        /* 4.注册全局组件 */
+        Vue.component('blog-post', {
+            props: ['post_info'],
+            /* 5.1.$emit() 绑定组件上定义的事件（在子组件上触发父组件定义的事件） */
+            template: `<div>
+                <template v-for="item in post_info">
+                    <ul>
+                        <li>{{item.title}}</li>
+                        <li>{{item.content}}</li>
+                        <li>{{item.comments}}</li>
+                    </ul>
+                    <button @click="$emit('enlarge_text')">5.3.点击增加字体字号 +</button>
+                    <button @click="$emit('enlarge_text', 0.2)">6.1.第二个参数的传递 +</button>
+                </template>
+            </div>`
+        })
+        /* 7.在组件上使用v-model */
+        Vue.component('custom-input', {
+            props: ['value1'],
+            /* 7.2.参数$event.target.value对应的应该是input输入的值 */
+            template: `
+                <div>
+                    <input
+                        :value="value1"
+                        @input="$emit('input', $event.target.value)"
+                    />
+                    <p>输入框打印：{{value1}}</p>
+                </div>
+            `
+        })
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app41',
+            data: {
+                post: [
+                    {
+                        id: 1,
+                        title: '第 A 句',
+                        content: '很开心 你能来 也不遗憾你离开',
+                        comments: '⭐⭐⭐⭐'
+                    }, {
+                        id: 2,
+                        title: '第 B 句',
+                        content: '领会了 这无奈 心突然撕扯成几块',
+                        comments: '⭐⭐⭐⭐⭐'
+                    }, {
+                        id: 3,
+                        title: '第 C 句',
+                        content: '回头了 你不在 早该明白你的坏',
+                        comments: '⭐⭐⭐⭐'
+                    }, {
+                        id: 4,
+                        title: '第 D 句',
+                        content: '只是我 放不开 没理由的再去猜',
+                        comments: '⭐⭐⭐'
+                    }, {
+                        id: 5,
+                        title: '第 E 句',
+                        content: '就算我 放手了',
+                        comments: '⭐⭐⭐⭐'
+                    }],
+                /* 5.3.事件初始值 */
+                postFontSize: 1,
+                /* 7.1.自定义输入框初始值 */
+                searchText: '123',
+                messageTwo: '两个是相同的效果'
+            },
+            /* 6.2.抛出来的参数做为函数的第一个参数 $event */
+            methods: {
+                postFontSizeFoo: function ($event) {
+                    alert($event)
+                    return this.postFontSize += $event
+                }
+            }
+        });
+
+        /*
+        * 总结：通过事件向父级组件发送消息
+        *   场景：通过子组件按钮点击触发所有文本字体变大。见 5
+        *     - 通过内部建立$emit()方法，来触发子组件名上注册的事件 @click="$emit(子组件上注册的事件名称)"
+        *     - 在组件元素上注册事件，等待被子组件触发。@事件名称="事件处理"
+        *
+        * 总结：使用事件抛出一个值
+        *   场景：通过$emit()的第二个参数$event来抛出一个值，来决定文本要放大多少。在父级监听这个事件时就能访问到抛出来的值。见 6
+        *     - 直接运算。见 6
+        *     - 函数运算，而抛出来的值被作为该函数的第一个参数传递进去。见 6.2
+        *
+        * 总结：在组件上使用v-model
+        *   自定义事件也可以用于创建支持v-model的自定义输入组件。
+        *   <input v-model="searchText" />
+        *   <input v-on:value="searchText" v-on:input="searchText=$event.target.value" />
+        *   他们两个是相同的效果，见 7.1
+        *
+        *   在组件上使用时，跟上面类似。见 7.4 - 7.2
+        *     - 将其value特性绑定在一个名叫value的prop上
+        *     - 在其input事件被触发时，将新的值通过自定义的input事件抛出
+        *     - 这样组件就已成，只需要在组件上使用v-model即可。见 7.3
+        * */
+    </script>
+</body>
+</html>

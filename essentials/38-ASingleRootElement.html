@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 1.先引入vue.js -->
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+    <!-- 2.创建一个坑 -->
+    <div id="app40">
+        <!-- 5.虽然我们可以定义很多的prop，但是这样的书写方式是很繁琐的，不推荐 -->
+        <blog-group
+            v-for="post in post"
+            :title_name="post.title"
+            :content="post.content"
+            :comments="post.comments"
+            :key="post.id"
+        ></blog-group>
+        <!-- 6.只传递一个prop过去，在组件内部进行数据循环渲染 -->
+        <blog-only-one-prop :post_all="post"></blog-only-one-prop>
+    </div>
+    <script>
+        /* 4.定义一个全局组件 */
+        /* 5.1.外面循环后传递每个prop的方式组件 */
+        Vue.component('blog-group', {
+            props: ['title_name', 'content', 'comments'],
+            template: `
+                <ul>
+                    <li>{{title_name}}</li>
+                    <li>{{content}}</li>
+                    <li>{{comments}}</li>
+                </ul>
+            `
+        })
+        /* 6.1.外面直接把数据传递进入组件，在里面进行循环处理数据 */
+        Vue.component('blog-only-one-prop', {
+            props: ['post_all'],
+            /* 6.2.必须要有一个根元素，且不能在上面做指令添加。可做类名添加 */
+            template: `
+                <ul class="abc">
+                    <template v-for="post in post_all">
+                        <li>{{post.id}}</li>
+                        <li>{{post.title}}</li>
+                        <li>{{post.content}}</li>
+                        <li>{{post.comments}}</li>
+                    </template>
+                </ul>
+            `
+        });
+        /* 3.创建一个Vue实例，绑定一个坑 */
+        const vm = new Vue({
+            el: '#app40',
+            data: {
+                post: [{
+                    id: 1,
+                    title: '第 A 句',
+                    content: '很开心 你能来 也不遗憾你离开',
+                    comments: '⭐⭐⭐⭐'
+                },{
+                    id: 2,
+                    title: '第 B 句',
+                    content: '领会了 这无奈 心突然撕扯成几块',
+                    comments: '⭐⭐⭐⭐⭐'
+                },{
+                    id: 3,
+                    title: '第 C 句',
+                    content: '回头了 你不在 早该明白你的坏',
+                    comments: '⭐⭐⭐⭐'
+                },{
+                    id: 4,
+                    title: '第 D 句',
+                    content: '只是我 放不开 没理由的再去猜',
+                    comments: '⭐⭐⭐'
+                },{
+                    id: 5,
+                    title: '第 E 句',
+                    content: '就算我 放手了',
+                    comments: '⭐⭐⭐⭐'
+                }]
+            }
+        })
+
+        /*
+        * 总结：单个根元素
+        *   当我们构建一个组件时，我们得模板里面往往有很多内容。多元素组合。如：
+        *   <h3>{{item}}</h3>
+        *   <div>{{id}}</div>
+        *   如果我们像上面这样书写那么就会报错。every component must have a single root element（每个组件必须只有一个根元素）。
+        *   所以我们要在外面包裹一个父元素，作为组件的根元素。见 6
+        *
+        *   虽然我们可以注册很多的prop来传递数据，但是这样会使组件定义变得很麻烦，稍作变动就会影响很多。见 5
+        *   所以在我们能注册一个prop的时候，就别注册两个prop。可在组件内部进行分解数据。见 6
+        *   这时我们在data数据添加其他字段时，可直接在组件中添加即可，不用注册prop来添加了
+        *
+        *   ` ... `  这中模板字符串来让多行的模板更易读。但他在IE下没有被支持，所以需要的时候可以通过（在不使用Balel或TypeScript等编译工具情况下）折行转义字符。
+        * */
+    </script>
+</body>
+</html>
