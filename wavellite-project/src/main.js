@@ -15,7 +15,21 @@ import Vue from 'vue'
 // import ComponentAll from './components/08-eventNames'
 // import ComponentAll from './components/09-customizingComponentV-Model'
 // import ComponentAll from './components/10-bindingNativeEventsToComponents(看不懂)'
-import ComponentAll from './components/12-slotContent'
+
+// import ComponentAll from './components/12-slotContent'
+
+// import ComponentAll from './components/13-keepAliveWithDynamicComponent'
+// import ComponentAll from './components/14-asyncComponents'
+
+// import ComponentAll from './components/15-element&componentAccess'
+// import ComponentAll from './components/16-accessingTheParentComponentInstance'
+// import ComponentAll from './components/17-accessingChildComponentInstances&ChildElements'
+// import ComponentAll from './components/18-dependencyInjection'
+// import ComponentAll from './components/20-recursiveComponents'
+// import ComponentAll from './components/21-circularReferencesBetweenComponents'
+// import ComponentAll from './components/22-inlineTemplates'
+// import ComponentAll from './components/24-forcingAnUpdate'
+import ComponentAll from './components/25-cheapStaticComponentsWithVOnce'
 
 Vue.config.productionTip = false
 
@@ -29,6 +43,9 @@ Vue.config.productionTip = false
 new Vue({
   // 2.绑定index页面的id #app
   el: '#app',
+  data: {
+    msg: '我来自main.js的数据，是用来测试注册的根实例数据'
+  },
   // 3.绑定主页面
   components: {
     ComponentAll

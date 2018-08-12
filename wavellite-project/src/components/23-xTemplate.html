@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="../../../lib/vue.js"></script>
+</head>
+<body>
+  <div id="app23">
+    <hello_world></hello_world>
+  </div>
+
+  <script type="text/x-template" id="hello-world-template">
+    <div>
+      <p>Hello hello hello</p>
+      <p>我是x-template模板的信息，在全局注册中使用，或者说只能在html中使用。即不能以.vue的形式来进行操作。</p>
+    </div>
+  </script>
+
+  <script>
+    /* 1.通过id引入x-template类型的script元素中的信息 */
+    Vue.component('hello_world', {
+      template: '#hello-world-template'
+    });
+    const vm = new Vue({
+      el: '#app23'
+    });
+    /*
+     * 总结：x-Templates
+     *   使用场景：跟artTemplate差不多，需要单独定义一个script标签，并定义id。在html或者页面中进行使用。
+     *
+     *   定义在script元素中，并定义 type='text/x-template' 类型，然后通过id 引入进组件中的template属性。见 1
+     *
+     *   官网推荐：该模板只推荐在小Demo或者全局注册的模板特别大的情况下使用。但是其它情况下请避免使用，因为这会将模板和该组件的其它定义分离开。
+     * */
+  </script>
+</body>
+</html>

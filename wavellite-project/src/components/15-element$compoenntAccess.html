@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="../../../lib/vue.js"></script>
+</head>
+<body>
+<div id="app15">
+  <my_component></my_component>
+</div>
+<script>
+  /* 1.这里的数据都在new Vue中，在组件里面是没有的，我们通过$root访问根实例数据 */
+  Vue.component('my_component', {
+    template: `
+                <div>
+                   <p>{{this.$root.msg}}</p>
+                   <hr>
+                   <p>{{this.$root.foo()}}</p>
+                   <hr>
+                   <p>{{this.$root.bar}}</p>
+                </div>
+            `
+  });
+  new Vue({
+    el: '#app15',
+    data: {
+      msg: '能不能愉快的敲代码了'
+    },
+    methods: {
+      foo: function () {
+        return '我就不明白了，引入的时候怎么引入'
+      }
+    },
+    computed: {
+      bar: function () {
+        console.log(this)
+        return 'baz'
+      }
+    }
+  });
+
+  /*
+  * 总结：访问根实例
+  *   在每个new Vue() 中的实例中，在组件中都可以通过 $root 属性来进行访问。见 1
+  *   所有的子组件都可以通过这个实例来作为全局store来访问或使用。在大项目中我们肯定得用VueX来进行保存这些类似数据（全局数据）。
+  * */
+</script>
+</body>
+</html>
